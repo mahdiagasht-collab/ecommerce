@@ -34,9 +34,6 @@ class model extends mainDB{
             echo '😤😤';
             (static::makeOBJ()) -> base = 'SELECT ' . implode(',' , $fields);
         }
-        // if ($fields == ['*']) {
-        //     $fields = static::$fields;
-        // }
         return static::$OBJ;
     }
     public static function find($id){
@@ -212,23 +209,25 @@ class model extends mainDB{
         (static::makeOBJ()) -> join = $requestJoin['typeJoin'] . ' JOIN ' . $requestJoin['tableName'];
         return static::$OBJ;
     }
-    public static function on(array $requiredValues = []){
-        if ($requiredValues == []) {
-            $columnName = static::$related[0];
-            $columnValue = static::$related[1];
-        }else {
-            if ($requiredValues[0] == '') { $columnName = 'id'; }else { $columnName = $requiredValues[0]; }
-            $columnValue = $requiredValues[1];
-        }
 
-        if ((static::makeOBJ()) -> on == '') {
-            (static::makeOBJ()) -> on = ' ON '. $columnName . ' = ' . $columnValue;
-        }else {
-            (static::makeOBJ()) -> on .= ' AND '. $columnName . ' = ' . $columnValue;
-        }
-        return static::$OBJ;
 
-    }
+    // public static function on(array $requiredValues = []){
+    //     if ($requiredValues == []) {
+    //         $columnName = static::$related[0];
+    //         $columnValue = static::$related[1];
+    //     }else {
+    //         if ($requiredValues[0] == '') { $columnName = 'id'; }else { $columnName = $requiredValues[0]; }
+    //         $columnValue = $requiredValues[1];
+    //     }
+
+    //     if ((static::makeOBJ()) -> on == '') {
+    //         (static::makeOBJ()) -> on = ' ON '. $columnName . ' = ' . $columnValue;
+    //     }else {
+    //         (static::makeOBJ()) -> on .= ' AND '. $columnName . ' = ' . $columnValue;
+    //     }
+    //     return static::$OBJ;
+
+    // }
     
 
 
@@ -270,21 +269,34 @@ class model extends mainDB{
 
     
     public static function where(array $requiredValues = []){
-        // foreach ($requiredValues as $key => $value) {
-        //     $columnName = $key;
-        //     $columnValue = $value;
-        // }
-        // var_dump($requiredValues);
-        if ($requiredValues[0] == '') {
-            $columnName = 'id';
-        }else {
-            $columnName = $requiredValues[0];
+        
+        
+        if ($requiredValues == []) {
+            $columnName = static::$related[0];
+            $columnValue = static::$related[1];
+        } else {
+            if ($requiredValues[0] == '') {
+                $columnName = 'id';
+            }else {
+                $columnName = $requiredValues[0];
+            }
+            $columnValue = $requiredValues[1];
         }
-        $columnValue = $requiredValues[1];
-        if ((static::makeOBJ()) -> where == '') {
-            (static::makeOBJ()) -> where = ' WHERE '. $columnName . ' = ' . $columnValue;
+
+
+
+        if ((static::makeOBJ()) -> join == ''){
+            if ((static::makeOBJ()) -> where == '') {
+                (static::makeOBJ()) -> where = ' WHERE '. $columnName . ' = ' . $columnValue;
+            }else {
+                (static::makeOBJ()) -> where .= ' AND '. $columnName . ' = ' . $columnValue;
+            }
         }else {
-            (static::makeOBJ()) -> where .= ' AND '. $columnName . ' = ' . $columnValue;
+            if ((static::makeOBJ()) -> on == '') {
+                (static::makeOBJ()) -> on = ' ON '. $columnName . ' = ' . $columnValue;
+            }else {
+                (static::makeOBJ()) -> on .= ' AND '. $columnName . ' = ' . $columnValue;
+            }
         }
         return static::$OBJ;
     }
@@ -326,7 +338,7 @@ class model extends mainDB{
         if ($this -> from == '') { $this -> from(); }
         if ($this -> join == '') { $this -> on = ''; } else { 
             $this -> where = '';
-            if ($this -> on == '') { $this -> on(); }
+            if ($this -> on == '') { $this -> where(); }
         }
         
         $where =    $this -> where;

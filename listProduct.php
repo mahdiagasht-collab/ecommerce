@@ -27,7 +27,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     // var_dump($arraysInUrl);
     // pageInIt ------------------------------------------------------------------------
     if ($arraysInUrl[0] == 'pageInIt') {
-        $result = product::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> with(['category' => ['title']] , 'product_category');
+        $result = product::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> get();
 
         $numRows = $arraysInUrl[2];
         if ($result -> num_rows < 10) {
@@ -79,25 +79,25 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         $pageInIt = 'serchPageInIt';
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
-            $result = product::limit($_POST) -> with(['category' => ['title']] , 'product_category');
+            $result = product::limit($_POST) -> join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> get();
 
-            $value1 = $_POST[0];
-            $value2 = $_POST[1];
+            // $value1 = $_POST[0];
+            // $value2 = $_POST[1];
             echo '😤';
-            $numRows = $result -> num_rows / 10;
+            echo $numRows = $result -> num_rows / 10;
             // $pageRows = $result -> num_rows;
             if ($result -> num_rows < 10) {
                 $pageRows = $result -> num_rows;
             }
             // die();
         }else {
-            $result = product::limit([$arraysInUrl[1] + ($arraysInUrl[3] . 0),$arraysInUrl[2]]) -> with(['category' => ['title']] , 'product_category');
+            $result = product::limit([$arraysInUrl[1] + 0,$arraysInUrl[1] + 10]) -> join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> get();
             // echo '🚩';
             
-            $value1 = $arraysInUrl[1];
-            $value2 = $arraysInUrl[2];
+            // $value1 = $arraysInUrl[1];
+            // $value2 = $arraysInUrl[2];
             
-            $numRows = $arraysInUrl[4];
+            $numRows = $arraysInUrl[2];
 
             if ($result -> num_rows < 10) {
                 $pageRows = $result -> num_rows;
@@ -149,18 +149,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         <?php } ?>
     </div>
 <?php } ?>
-<!-- serchPageInIt --------------------------------------------------------- -->
-<div style="display: flex;justify-content: center;">
-    <?php
-    if ($go == '1') {
-        for ($i=0; $i < $numRows; $i++) { 
-            ?>
-            <a href="http://localhost/ecommerce/listProduct/serchPageInIt,<?= $value1 ?>,<?= $value2 ?>,<?= $i ?>,<?= $numRows ?>" style="background-color: bisque;margin: 10px;padding: 10px;border-radius: 10px;text-decoration: none;"><?= $i + 1 ?></a>
-            <?php 
-        }
-    }
-    ?>
-</div>
+
 <div style = "display: flex;flex-direction: row-reverse;justify-content: center;width: 100%;">
     <!-- pageInItPrice ---------------------------------------------------------- -->
     <div style="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: column;align-items: center;width: 20%;">
