@@ -1,5 +1,10 @@
 <?php
-$result = product::with(['category' => ['title']] , 'product_category');
+$result = product::select(['product.id' , 'product.name' , 'product.price' , 'category.title product_category' , 'product.description']) -> from() -> join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> on(['product.category' , 'category.id']) -> get();
+
+
+
+// die();
+// $result = product::with(['category' => ['title']] , 'product_category');
 // $result = product::select() -> makeSubQuery('category' , [['select' => ['title']] , ['where' => ['product.category' , 'category.id']]] , 'product_category') -> get();
 
 

@@ -197,6 +197,7 @@ class model extends mainDB{
 
     public static function join(array $requestJoin){
         (static::makeOBJ()) -> join = $requestJoin['typeJoin'] . ' JOIN ' . $requestJoin['tableName'];
+        return static::$OBJ;
     }
     public static function on(array $requiredValues = []){
 
@@ -204,7 +205,7 @@ class model extends mainDB{
         $columnValue = $requiredValues[1];
 
         if ((static::makeOBJ()) -> on == '') {
-            (static::makeOBJ()) -> on = ' WHERE '. $columnName . ' = ' . $columnValue;
+            (static::makeOBJ()) -> on = ' ON '. $columnName . ' = ' . $columnValue;
         }else {
             (static::makeOBJ()) -> on .= ' AND '. $columnName . ' = ' . $columnValue;
         }
@@ -304,16 +305,16 @@ class model extends mainDB{
 
 
     public function get(string $fields = '*'){
-        if ($this -> base == '') { $this -> select([static::$table . '.' . $fields]); }
+        if ($this -> base == '') { $this -> select([$fields]); }
         if ($this -> from == '') { $this -> from(); }
-        // if (static::$subQuery == '') { static::$subQuery(); }
+        if ($this -> join == '') { $this -> on = ''; } else { $this -> where = ''; }
         
         $where =    $this -> where;
         $limit =    $this -> limit;
         $base =     $this -> base;
         $from =     $this -> from;
         $join =     $this -> join;
-        $on =     $this -> on;
+        $on =       $this -> on;
         $subQuery = static::$subQuery;
         
         // echo ($this -> base . $where . $limit);
@@ -325,6 +326,6 @@ class model extends mainDB{
         $this -> on = '';
         static::$subQuery = '';
 
-        return static::$returnedMysqlOBJ = $this -> sendQuery($base . $subQuery . $from . $join . $where . $limit);
+        return static::$returnedMysqlOBJ = $this -> sendQuery($base . $subQuery . $from . $join . $on . $where . $limit);
     }
 }
