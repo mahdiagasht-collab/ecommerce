@@ -200,9 +200,13 @@ class model extends mainDB{
         return static::$OBJ;
     }
     public static function on(array $requiredValues = []){
-
-        if ($requiredValues[0] == '') { $columnName = 'id'; }else { $columnName = $requiredValues[0]; }
-        $columnValue = $requiredValues[1];
+        if ($requiredValues == []) {
+            $columnName = static::$related[0];
+            $columnValue = static::$related[1];
+        }else {
+            if ($requiredValues[0] == '') { $columnName = 'id'; }else { $columnName = $requiredValues[0]; }
+            $columnValue = $requiredValues[1];
+        }
 
         if ((static::makeOBJ()) -> on == '') {
             (static::makeOBJ()) -> on = ' ON '. $columnName . ' = ' . $columnValue;
@@ -307,7 +311,10 @@ class model extends mainDB{
     public function get(string $fields = '*'){
         if ($this -> base == '') { $this -> select([$fields]); }
         if ($this -> from == '') { $this -> from(); }
-        if ($this -> join == '') { $this -> on = ''; } else { $this -> where = ''; }
+        if ($this -> join == '') { $this -> on = ''; } else { 
+            $this -> where = '';
+            if ($this -> on == '') { $this -> on(); }
+        }
         
         $where =    $this -> where;
         $limit =    $this -> limit;

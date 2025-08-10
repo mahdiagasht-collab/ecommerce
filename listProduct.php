@@ -1,5 +1,5 @@
 <?php
-$result = product::select(['product.id' , 'product.name' , 'product.price' , 'category.title product_category' , 'product.description']) -> from() -> join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> on(['product.category' , 'category.id']) -> get();
+$result = product::join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> on(['product.category' , 'category.id']) -> get();
 
 
 
@@ -212,7 +212,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
                     <?= $value['price'] ?>
                 </div>
                 <div style="width: 100px;display: flex;justify-content: center;">
-                    <?= $value['product_category'] ?>
+                    <?= $value['title'] ?>
                 </div>
                 <div style="width: 300px;display: flex;justify-content: center;">
                     <?= $value['description'] ?>
