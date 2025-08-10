@@ -1,5 +1,10 @@
 <?php
-$result = product::with(['category' => ['title']] , 'product_category');
+$result = product::join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> on(['product.category' , 'category.id']) -> get();
+
+
+
+// die();
+// $result = product::with(['category' => ['title']] , 'product_category');
 // $result = product::select() -> makeSubQuery('category' , [['select' => ['title']] , ['where' => ['product.category' , 'category.id']]] , 'product_category') -> get();
 
 
@@ -207,7 +212,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
                     <?= $value['price'] ?>
                 </div>
                 <div style="width: 100px;display: flex;justify-content: center;">
-                    <?= $value['product_category'] ?>
+                    <?= $value['title'] ?>
                 </div>
                 <div style="width: 300px;display: flex;justify-content: center;">
                     <?= $value['description'] ?>
