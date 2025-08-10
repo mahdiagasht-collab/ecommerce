@@ -1,5 +1,5 @@
 <?php
-$result = product::join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> on(['product.category' , 'category.id']) -> get();
+$result = product::join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> get();
 
 
 
@@ -203,7 +203,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         <?php for ($i=$az; $i < $pageRows ; $i++) { if (!empty($basicValue)){ $value = $basicValue[$i]; }else{ $value = $result -> fetch_assoc();} ?>
             <div style="background-color: azure;margin: 10px;padding: 10px;border-radius: 10px;width: 96%;display: flex;justify-content: space-around;align-items: center;">
                 <div>
-                    <?= $value['id'] ?>
+                    <?= $value['product_id'] ?>
                 </div>
                 <div style="width: 200px;display: flex;justify-content: center;">
                     <?= $value['name'] ?>
@@ -212,14 +212,14 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
                     <?= $value['price'] ?>
                 </div>
                 <div style="width: 100px;display: flex;justify-content: center;">
-                    <?= $value['title'] ?>
+                    <?= $value['product_category'] ?>
                 </div>
                 <div style="width: 300px;display: flex;justify-content: center;">
                     <?= $value['description'] ?>
                 </div>
-                <a href="http://localhost/ecommerce/singleProduct/<?= $value['id'] ?>">نمایش</a>
-                <a href="http://localhost/ecommerce/editeProduct/<?= $value['id'] ?>">ویرایش</a>
-                <a href="http://localhost/ecommerce/deleteProduct/<?= $value['id'] ?>">حذف</a>
+                <a href="http://localhost/ecommerce/singleProduct/<?= $value['product_id'] ?>">نمایش</a>
+                <a href="http://localhost/ecommerce/editeProduct/<?= $value['product_id'] ?>">ویرایش</a>
+                <a href="http://localhost/ecommerce/deleteProduct/<?= $value['product_id'] ?>">حذف</a>
             </div>
         <?php } ?>
         

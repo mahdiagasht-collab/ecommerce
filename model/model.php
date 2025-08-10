@@ -21,9 +21,22 @@ class model extends mainDB{
     }
 
     
-    
-    public static function select(array $fields=['*']){
-        (static::makeOBJ()) -> base = 'SELECT ' . implode(',' , $fields);
+    // public static function select(array $fields=['*']){
+    //     (static::makeOBJ()) -> base = 'SELECT ' . implode(',' , $fields);
+    //     return static::$OBJ;
+    // }
+    public static function select(array $fields = ['*']){
+        if ($fields == ['*']) {
+            var_dump($fields);
+            echo '😤';
+            (static::makeOBJ()) -> base = 'SELECT ' . implode(',' , static::$fields);
+        } else {
+            echo '😤😤';
+            (static::makeOBJ()) -> base = 'SELECT ' . implode(',' , $fields);
+        }
+        // if ($fields == ['*']) {
+        //     $fields = static::$fields;
+        // }
         return static::$OBJ;
     }
     public static function find($id){
@@ -308,8 +321,8 @@ class model extends mainDB{
 
 
 
-    public function get(string $fields = '*'){
-        if ($this -> base == '') { $this -> select([$fields]); }
+    public function get(array $fields = ['*']){
+        if ($this -> base == '') { $this -> select($fields); }
         if ($this -> from == '') { $this -> from(); }
         if ($this -> join == '') { $this -> on = ''; } else { 
             $this -> where = '';
