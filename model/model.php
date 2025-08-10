@@ -212,6 +212,8 @@ class model extends mainDB{
         (static::makeOBJ()) -> join = $requestJoin['typeJoin'] . ' JOIN ' . $requestJoin['tableName'];
         return static::$OBJ;
     }
+
+    
     public static function on(array $requiredValues = []){
         if ($requiredValues == []) {
             $columnName = static::$related[0];
