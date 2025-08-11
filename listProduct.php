@@ -3,8 +3,8 @@
 $result = product::category()-> get();
 
 
-die();
-$result = product::join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> get();
+// die();
+// $result = product::join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> get();
 
 
 
