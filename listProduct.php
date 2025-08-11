@@ -1,4 +1,9 @@
 <?php
+
+$result = product::category()-> get();
+
+
+die();
 $result = product::join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> get();
 
 
@@ -28,6 +33,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     // pageInIt ------------------------------------------------------------------------
     if ($arraysInUrl[0] == 'pageInIt') {
         $result = product::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> get();
+        // $result = product::category(["title"])-> get();
 
         $numRows = $arraysInUrl[2];
         if ($result -> num_rows < 10) {

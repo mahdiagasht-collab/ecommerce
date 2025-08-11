@@ -4,6 +4,7 @@ class product extends model{
     protected static $OBJ = null;
     protected static $table = ' product ';
     protected static $related = ['product.category' , 'category.id'];
+    protected static $relatedClass = 'category';
     protected static $subQuery = '';
-    protected static $fields = ['product.id product_id' , 'name' , 'price' , 'category.title product_category' , 'product.description description'];
+    protected static $fields = ['product_id' , 'name' , 'price' , 'category.title product_category' , 'product.description description'];
 }
