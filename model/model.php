@@ -205,10 +205,29 @@ class model extends mainDB{
     }
 
 
-    public static function join(array $requestJoin){
-        (static::makeOBJ()) -> join = $requestJoin['typeJoin'] . ' JOIN ' . $requestJoin['tableName'];
+    // public static function join(array $requestJoin){
+    //     (static::makeOBJ()) -> join = $requestJoin['typeJoin'] . ' JOIN ' . $requestJoin['tableName'];
+    //     return static::$OBJ;
+    // }
+    public static function category(){
+        // if ((static::makeOBJ()) instanceof product) {
+            (static::makeOBJ()) -> join = 'LEFT JOIN category';
+            (static::makeOBJ()) -> where();
+            // if ($requestJoin != []) { (static::makeOBJ()) -> where($requestJoin); }
+        // }
+        // (static::makeOBJ()) -> join = $requestJoin['typeJoin'] . ' JOIN ' . $requestJoin['tableName'];
         return static::$OBJ;
     }
+    // public static function product(array $requestJoin = []){
+    //     if ((static::makeOBJ()) instanceof category) {
+    //         (static::makeOBJ()) -> join = 'LEFT JOIN ' . 'category';
+    //         (static::makeOBJ()) -> where();
+    //         if ($requestJoin != []) { (static::makeOBJ()) -> where($requestJoin); }
+    //     }
+    //     // (static::makeOBJ()) -> join = $requestJoin['typeJoin'] . ' JOIN ' . $requestJoin['tableName'];
+    //     return static::$OBJ;
+    // }
+
 
 
     // public static function on(array $requiredValues = []){
