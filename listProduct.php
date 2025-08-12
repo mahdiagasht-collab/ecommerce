@@ -1,17 +1,5 @@
 <?php
-
 $result = product::category()-> get();
-
-
-// die();
-// $result = product::join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> get();
-
-
-
-// die();
-// $result = product::with(['category' => ['title']] , 'product_category');
-// $result = product::select() -> makeSubQuery('category' , [['select' => ['title']] , ['where' => ['product.category' , 'category.id']]] , 'product_category') -> get();
-
 
 $az = 0;
 $go = '';
@@ -26,14 +14,10 @@ $pageInIt = 'pageInIt';
 $columnInQuestion = '';
 $sortingType = '';
 
-// var_dump($GLOBALS['urlArray']);
 for ($i=3; $i < count($GLOBALS['urlArray']); $i++) { 
     $arraysInUrl = explode(',', $GLOBALS['urlArray'][$i]);
-    // var_dump($arraysInUrl);
     // pageInIt ------------------------------------------------------------------------
     if ($arraysInUrl[0] == 'pageInIt') {
-        $result = product::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> get();
-        // $result = product::category(["title"])-> get();
 
         $numRows = $arraysInUrl[2];
         if ($result -> num_rows < 10) {
@@ -43,6 +27,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     // pageInItPrice ----------------------------------------------------------------------
     if ($arraysInUrl[0] == 'pageInItPrice') {
         echo '🤨';
+        $pageInIt = 'pageInItPrice';
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
             
@@ -53,27 +38,20 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             $columnInQuestion = $_POST['columnInQuestion'];
             $sortingType = $_POST['sortingType'];
             
-            $pageInIt = 'pageInItPrice';
             
         }else {
-            $pageInIt = 'pageInItPrice';
-            // $columnInQuestion = '';
-            // $sortingType = '';
-            if (empty($arraysInUrl[3])) {
-                $columnInQuestion = '';
-                $sortingType = '';
-            }else {
-                $columnInQuestion = $arraysInUrl[3];
-                $sortingType = $arraysInUrl[4];
-            }
+
+            $columnInQuestion = $arraysInUrl[3];
+            $sortingType = $arraysInUrl[4];
+
             $data = ['columnInQuestion' => $columnInQuestion , 'sortingType' => $sortingType];
             $basicValue = $result = product::pageInItPrice($data);
             $az = $arraysInUrl[1] + 0;
             $numRows = $arraysInUrl[2];
-            if (count($result) - $arraysInUrl[1] < 10) {
+            if (count($result) - $az < 10) {
                 $pageRows = count($result);
             }else {
-                $pageRows = 10;
+                $pageRows = $az + 10;
             }
         }
 
@@ -87,22 +65,12 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         if (!empty($_POST)) {
             $result = product::limit($_POST) -> join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> get();
 
-            // $value1 = $_POST[0];
-            // $value2 = $_POST[1];
-            echo '😤';
-            echo $numRows = $result -> num_rows / 10;
-            // $pageRows = $result -> num_rows;
+            $numRows = $result -> num_rows / 10;
             if ($result -> num_rows < 10) {
                 $pageRows = $result -> num_rows;
             }
-            // die();
         }else {
             $result = product::limit([$arraysInUrl[1] + 0,$arraysInUrl[1] + 10]) -> join(['typeJoin' => 'LEFT' , 'tableName' => 'category']) -> get();
-            // echo '🚩';
-            
-            // $value1 = $arraysInUrl[1];
-            // $value2 = $arraysInUrl[2];
-            
             $numRows = $arraysInUrl[2];
 
             if ($result -> num_rows < 10) {
@@ -162,7 +130,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         <form action="http://localhost/ecommerce/listProduct/pageInItPrice" method = "post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <select name="columnInQuestion" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
                 <option value="price">price</option>
-                <option value="id">id</option>
+                <option value="product_id">id</option>
             </select>
             <select name="sortingType" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
                 <option value="decs">decs</option>
@@ -195,7 +163,8 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         ----------------------------------------
     </div>
     <div style="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: column;align-items: center;width: 80%;">
-        <?php for ($i=$az; $i < $pageRows ; $i++) { if (!empty($basicValue)){ $value = $basicValue[$i]; }else{ $value = $result -> fetch_assoc();} ?>
+        <?php 
+        for ($i=$az; $i < $pageRows ; $i++) { if (!empty($basicValue)){ $value = $basicValue[$i]; }else{ $value = $result -> fetch_assoc();} ?>
             <div style="background-color: azure;margin: 10px;padding: 10px;border-radius: 10px;width: 96%;display: flex;justify-content: space-around;align-items: center;">
                 <div>
                     <?= $value['product_id'] ?>

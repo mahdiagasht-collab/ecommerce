@@ -29,6 +29,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     // pageInItPrice ----------------------------------------------------------------------
     if ($arraysInUrl[0] == 'pageInItPrice') {
         echo '🤨';
+        $pageInIt = 'pageInItPrice';
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
             
@@ -39,28 +40,24 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             $columnInQuestion = $_POST['columnInQuestion'];
             $sortingType = $_POST['sortingType'];
             
-            $pageInIt = 'pageInItPrice';
             
         }else {
-            $pageInIt = 'pageInItPrice';
-            // $columnInQuestion = '';
-            // $sortingType = '';
-            if (empty($arraysInUrl[3])) {
-                $columnInQuestion = '';
-
-                $sortingType = '';
-            }else {
+            // if (empty($arraysInUrl[3])) {
+            //     $columnInQuestion = '';
+            //     echo '🤨';
+            //     $sortingType = '';
+            // }else {
                 $columnInQuestion = $arraysInUrl[3];
                 $sortingType = $arraysInUrl[4];
-            }
+            // }
             $data = ['columnInQuestion' => $columnInQuestion , 'sortingType' => $sortingType];
             $basicValue = $result = category::pageInItPrice($data);
             $az = $arraysInUrl[1] + 0;
             $numRows = $arraysInUrl[2];
-            if (count($result) - $arraysInUrl[1] < 10) {
+            if (count($result) - $az < 10) {
                 $pageRows = count($result);
             }else {
-                $pageRows = 10;
+                $pageRows = $az + 10;
             }
         }
 
@@ -114,7 +111,6 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
 
         $result = category::where( [$_POST['columnInQuestion'] , " '" . $_POST['textInQuestion'] . "' "]) -> with(['product' => ['count(*) ']] , 'categoryProductCount');
         $numRows = $result -> num_rows / 10;
-        // $pageRows = $result -> num_rows;
         if ($result -> num_rows < 10) {
             $pageRows = $result -> num_rows;
         }
@@ -154,7 +150,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     <div style="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: column;align-items: center;width: 20%;">
         <form action="http://localhost/ecommerce/listCategory/pageInItPrice" method = "post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <select name="columnInQuestion" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
-                <option value="id">id</option>
+                <option value="category_id">id</option>
             </select>
             <select name="sortingType" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
                 <option value="decs">decs</option>
@@ -185,10 +181,11 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         ----------------------------------------
     </div>
     <div style="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: column;align-items: center;width: 80%;">
-        <?php for ($i=$az; $i < $pageRows ; $i++) { if (!empty($basicValue)){ $value = $basicValue[$i]; } else { $value = $result -> fetch_assoc(); } ?>
+        <?php 
+        for ($i=$az; $i < $pageRows ; $i++) { if (!empty($basicValue)){ $value = $basicValue[$i]; } else { $value = $result -> fetch_assoc(); } ?>
             <div style="background-color: azure;margin: 10px;padding: 10px;border-radius: 10px;width: 96%;display: flex;justify-content: space-around;align-items: center;">
                 <div>
-                    <?= $value['id'] ?>
+                    <?= $value['category_id'] ?>
                 </div>
                 <div style="width: 200px;display: flex;justify-content: center;">
                     <?= $value['title'] ?>
@@ -197,13 +194,11 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
                     <?= $value['description'] ?>
                 </div>
                 <div style="width: 300px;display: flex;justify-content: center;">
-                    <?php /* product::select(['count(*)']) -> where($value['id'] , 'product.category') -> get() -> fetch_assoc()['count(*)']; */ ?>
-                    <?php /* product::where($value['id'] , 'product.category') -> count(); */ ?>
                     <?= $value['categoryProductCount'] ?>
                 </div>
-                <a href="http://localhost/ecommerce/singleCategory/<?= $value['id'] ?>">نمایش</a>
-                <a href="http://localhost/ecommerce/editeCategory/<?= $value['id'] ?>">ویرایش</a>
-                <a href="http://localhost/ecommerce/deleteCategory/<?= $value['id'] ?>">حذف</a>
+                <a href="http://localhost/ecommerce/singleCategory/<?= $value['category_id'] ?>">نمایش</a>
+                <a href="http://localhost/ecommerce/editeCategory/<?= $value['category_id'] ?>">ویرایش</a>
+                <a href="http://localhost/ecommerce/deleteCategory/<?= $value['category_id'] ?>">حذف</a>
             </div>
         <?php } ?>
     </div>
