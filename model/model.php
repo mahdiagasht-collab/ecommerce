@@ -210,12 +210,8 @@ class model extends mainDB{
     //     return static::$OBJ;
     // }
     public static function category(){
-        // if ((static::makeOBJ()) instanceof product) {
-            (static::makeOBJ()) -> join = 'LEFT JOIN category';
-            (static::makeOBJ()) -> where();
-            // if ($requestJoin != []) { (static::makeOBJ()) -> where($requestJoin); }
-        // }
-        // (static::makeOBJ()) -> join = $requestJoin['typeJoin'] . ' JOIN ' . $requestJoin['tableName'];
+        (static::makeOBJ()) -> join = 'LEFT JOIN category';
+        (static::makeOBJ()) -> where();
         return static::$OBJ;
     }
     // public static function product(array $requestJoin = []){
