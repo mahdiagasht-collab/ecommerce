@@ -4,7 +4,6 @@ $result = user::all();
 
 
 $az = 0;
-$go = '';
 $pageRows = 10;
 $ofset = 0;
 $limit = 10;
@@ -22,7 +21,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     $arraysInUrl = explode(',', $GLOBALS['urlArray'][$i]);
     // pageInIt ------------------------------------------------------------------------
     if ($arraysInUrl[0] == 'pageInIt') {
-        $result = user::select() -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> get();
+        $result = user::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> all();
         $numRows = $arraysInUrl[2];
         if ($result -> num_rows < 10) {
             $pageRows = $result -> num_rows;
@@ -31,6 +30,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     // pageInItPrice ----------------------------------------------------------------------
     if ($arraysInUrl[0] == 'pageInItPrice') {
         echo '🤨';
+        $pageInIt = 'pageInItPrice';
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
             
@@ -40,26 +40,19 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             
             $columnInQuestion = $_POST['columnInQuestion'];
             $sortingType = $_POST['sortingType'];
-            
-            $pageInIt = 'pageInItPrice';
+
             
         }else {
-            $pageInIt = 'pageInItPrice';
-            if (empty($arraysInUrl[3])) {
-                $columnInQuestion = '';
-                $sortingType = '';
-            }else {
-                $columnInQuestion = $arraysInUrl[3];
-                $sortingType = $arraysInUrl[4];
-            }
+            $columnInQuestion = $arraysInUrl[3];
+            $sortingType = $arraysInUrl[4];
             $data = ['columnInQuestion' => $columnInQuestion , 'sortingType' => $sortingType];
             $basicValue = $result = user::pageInItPrice($data);
             $az = $arraysInUrl[1] + 0;
             $numRows = $arraysInUrl[2];
-            if (count($result) - $arraysInUrl[1] < 10) {
+            if (count($result) - $az < 10) {
                 $pageRows = count($result);
             }else {
-                $pageRows = 10;
+                $pageRows = $az + 10;
             }
         }
 
@@ -70,7 +63,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     if ($arraysInUrl[0] == 'serchPageInIt') {
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
-            $result = user::select() -> limit($_POST) -> get();
+            $result = user::limit($_POST) -> all();
 
             $value1 = $_POST[0];
             $value2 = $_POST[1];
@@ -80,7 +73,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
                 $pageRows = $result -> num_rows;
             }
         }else {
-            $result = user::select() -> limit([$arraysInUrl[1] + ($arraysInUrl[3] . 0),$arraysInUrl[2]]) -> get();
+            $result = user::limit([$arraysInUrl[1] + ($arraysInUrl[3] . 0),$arraysInUrl[2]]) -> all();
             echo '😤';
             
             $value1 = $arraysInUrl[1];
@@ -92,14 +85,38 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
                 $pageRows = $result -> num_rows;
             }
         }
-        $go = '1';
     }
     // searchByColumns =---------------------------------------------------------------------
     if ($arraysInUrl[0] == 'searchByColumns') {
-        $result = user::select() -> where( [" '" . $_POST['textInQuestion'] . "' " , $_POST['columnInQuestion']]) -> get();            
-        $numRows = $result -> num_rows / 10;
+
+        $pageInIt = 'searchByColumns';
+        $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
+
+        if (empty($_POST)) {
+            
+            $columnInQuestion = $arraysInUrl[3];
+            $sortingType = urldecode($arraysInUrl[4]);
+            
+            $result = user::where([$columnInQuestion , " '" . $sortingType . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> all();            
+            
+            $az = $arraysInUrl[1] + 0;
+            $numRows = $arraysInUrl[2];
+        }else {
+            
+            $columnInQuestion = $_POST['columnInQuestion'];
+            $sortingType = urldecode($_POST['textInQuestion']);
+            
+            $result = user::where([$columnInQuestion , " '" . $sortingType . "' "]) -> all();
+
+            echo $numRows = $result -> num_rows / 10;
+            
+        }
+
+
         if ($result -> num_rows < 10) {
-            $pageRows = $result -> num_rows;
+            $pageRows = $result -> num_rows + $az;
+        }else {
+            $pageRows = $az + 10;
         }
     }
 
@@ -120,18 +137,6 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         <?php } ?>
     </div>
 <?php } ?>
-<!-- serchPageInIt --------------------------------------------------------- -->
-<div style="display: flex;justify-content: center;">
-    <?php
-    if ($go == '1') {
-        for ($i=0; $i < $numRows; $i++) { 
-            ?>
-            <a href="http://localhost/ecommerce/listUser/serchPageInIt,<?= $value1 ?>,<?= $value2 ?>,<?= $i ?>,<?= $numRows ?>" style="background-color: bisque;margin: 10px;padding: 10px;border-radius: 10px;text-decoration: none;"><?= $i + 1 ?></a>
-            <?php 
-        }
-    }
-    ?>
-</div>
 <div style = "display: flex;flex-direction: row-reverse;justify-content: center;width: 100%;">
     <!-- pageInItPrice ---------------------------------------------------------- -->
     <div style="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: column;align-items: center;width: 20%;">
@@ -166,7 +171,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             <input name="textInQuestion" placeholder="<?php if(!empty($value1)){ echo $value1; } ?>" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
             <button style="margin: 10px;padding: 5px;border-radius: 10px;border: none;background: none;">send</button>
         </form>
-        ----------------------------------------
+        <!-- ---------------------------------------- -->
     </div>
     <div style="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: column;align-items: center;width: 80%;">
         <?php for ($i=$az; $i < $pageRows ; $i++) { if (!empty($basicValue)){ $value = $basicValue[$i]; } else { $value = $result -> fetch_assoc(); } ?>
@@ -189,4 +194,16 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             </div>
         <?php } ?>
     </div>
+</div>
+
+<!-- pageInIt-------------------------------------------------------------- -->
+<div style="display: flex;justify-content: center;">
+    <?php
+        for ($i=0; $i < $numRows; $i++) { 
+            ?>
+            <a href="http://localhost/ecommerce/listUser/<?= $pageInIt ?>,<?= $i . 0 ?>,<?= $numRows ?>,<?= $columnInQuestion ?>,<?= $sortingType ?>" style="background-color: bisque;margin: 10px;padding: 10px;border-radius: 10px;text-decoration: none;"><?= $i + 1 ?></a>
+            <?php
+
+        }
+    ?>
 </div>

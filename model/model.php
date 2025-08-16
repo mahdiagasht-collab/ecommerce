@@ -6,13 +6,14 @@ class model extends mainDB{
     private $from = '';
     private $join = '';
     private $on = '';
+    private $type = '';
 
 
 
-    // private static function getReturnedOBJ(){
-    //     return static::$returnedMysqlOBJ;
-    // }
-    private static function makeOBJ(){
+    private static function getReturnedOBJ(){
+        return static::$returnedMysqlOBJ;
+    }
+    protected static function makeOBJ(){
         if (static::$OBJ === null) {
             echo '👌';
             return static::$OBJ = new static;
@@ -25,23 +26,16 @@ class model extends mainDB{
         (static::makeOBJ()) -> base = 'SELECT ' . implode(',' , $fields);
         return static::$OBJ;
     }
-    // public static function select(array $fields = ['*']){
-    //     if ($fields == ['*']) {
-            
-    //         (static::makeOBJ()) -> base = 'SELECT ' . implode(',' , static::$fields);
-    //     } else {
-    //         (static::makeOBJ()) -> base = 'SELECT ' . implode(',' , $fields);
-    //     }
-    //     return static::$OBJ;
-    // }
     public static function find($id){
-        return static::$connection -> query('SELECT * FROM ' . static::class . 'WHERE id = ' . $id);
+        static::makeOBJ();
+        return static::$connection -> query('SELECT * FROM ' . static::class . ' WHERE id = ' . $id);
     }
     public function delete(){
-        (static::makeOBJ()) -> base = "DELETE FROM ". static::$table;
+        (static::makeOBJ()) -> base = "DELETE ";
         return static::$OBJ;
     }
-    public function update(array $data){
+    public static function update(array $data){
+        (static::makeOBJ()) -> type = 'update';
         $TableValues = '';
         foreach ($data as $key => $value) {
             if ($TableValues != '') { $TableValues .= ' , ';}
@@ -51,6 +45,7 @@ class model extends mainDB{
         return static::$OBJ;
     }
     public static function create(array $data){
+        (static::makeOBJ()) -> type = 'update';
         $columnName = '';
         $columnValues = '';
         foreach ($data as $key => $value) {
@@ -61,6 +56,13 @@ class model extends mainDB{
         }
         (static::makeOBJ()) -> base = 'INSERT INTO '. static::$table . ' ( ' . $columnName . ' ) VALUES (' . $columnValues . ' ) ';
         return static::$OBJ;
+    }
+    public static function createOrUpdate(array $data){
+        if (static::all() -> num_rows == 1){
+            return static::update($data);
+        } else {
+            return static::create($data);
+        }
     }
     
 
@@ -187,15 +189,9 @@ class model extends mainDB{
     }
 
 
-    public static function category(){
-        (static::makeOBJ()) -> join = 'LEFT JOIN category';
-        (static::makeOBJ()) -> where();
-        return static::$OBJ;
-    }
-    public static function product(){
-
-        (static::makeOBJ()) -> join = 'LEFT JOIN product';
-        (static::makeOBJ()) -> where();
+    public function belongsTo(string $tableName){
+        $this -> join = 'INNER JOIN ' . $tableName;
+        $this -> where();
         return static::$OBJ;
     }
 
@@ -207,15 +203,26 @@ class model extends mainDB{
 
 
     
-    public static function with(array $requiredValuesForSubqueryRequest , $alies){
-        foreach ($requiredValuesForSubqueryRequest as $tableName => $fields) {
-            static::$subQuery = $tableName::select($fields) -> where(static::$related) -> getSQL($alies);
-        }
-        return (static::makeOBJ()) -> get();
+    public static function with($tableName){
+        // foreach ($requiredValuesForSubqueryRequest as $tableName => $fields) {
+        //     // static::$subQuery = $tableName::select($fields) -> where(static::$related) -> getSQL($alies);
+        //     static::$subQuery = $tableName::category($fields) -> getSQL($alies);
+        // }
+        static::$subQuery = $tableName::select(['count(*) ']) -> where(static::$related) -> getSQL('categoryProductCount');
+        // return (static::makeOBJ()) -> get();
+        return static::$OBJ;
     }
+
     private function getSQL(string $alies){
         if ($this -> base == '') { $this -> select(['count(*) count']); }
-        if ($this -> from == '') { $this -> from(); }
+        // if ($this -> from == '') { $this -> from(); }
+        // if ($this -> type == '') {
+            if ($this -> from == '') { $this -> from(); } 
+            if ($this -> join == '') { $this -> on = ''; } else { 
+                $this -> where = '';
+                if ($this -> on == '') { $this -> where(); }
+            }
+        // }
         
         $base =     $this -> base;
         $from =     $this -> from;
@@ -244,7 +251,7 @@ class model extends mainDB{
             $columnValue = static::$related[1];
         } else {
             if ($requiredValues[0] == '') {
-                $columnName = 'id';
+                $columnName = static::$table . '_id';
             }else {
                 $columnName = $requiredValues[0];
             }
@@ -272,19 +279,20 @@ class model extends mainDB{
         // var_dump($data);
         if (count($data) == 1) {
             $limit = $data[0];
-            $ofset = '';
+            $ofset = 10;
         }else {
             if ($data[0] < $data[1]) {
                 $limit = $data[0];
                 // echo '😤';
-                $ofset = ' , ' . $data[1] - ($data[0] + 1) + 1;
+                $ofset = $data[1] - $data[0];
 
             }else{
                 $limit = $data[1];
-                $ofset = ' , ' . $data[0] - ($data[1] + 1) + 1;
+                $ofset = $data[0] - $data[1];
+
             }
         }
-        (static::makeOBJ()) -> limit = ' LIMIT ' . $limit . $ofset;
+        (static::makeOBJ()) -> limit = ' LIMIT ' . $limit . ' , ' . $ofset;
         return static::$OBJ;
     }
 
@@ -301,13 +309,16 @@ class model extends mainDB{
 
 
 
-    public function get(array $fields = ['*']){
-        if ($this -> base == '') { $this -> select($fields); }
-        if ($this -> from == '') { $this -> from(); } 
-        if ($this -> join == '') { $this -> on = ''; } else { 
-            $this -> where = '';
-            if ($this -> on == '') { $this -> where(); }
-        }
+    public function get(){
+    // public function get(array $fields = ['*']){
+        // if ($this -> base == '') { $this -> select($fields); }
+        // if ($this -> type == '') {
+        //     if ($this -> from == '') { $this -> from(); } 
+        //     if ($this -> join == '') { $this -> on = ''; } else { 
+        //         $this -> where = '';
+        //         if ($this -> on == '') { $this -> where(); }
+        //     }
+        // }
         
         $base =     $this -> base;
         $from =     $this -> from;

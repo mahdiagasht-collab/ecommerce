@@ -5,4 +5,5 @@ class category extends model{
     protected static $table = 'category';
     protected static $related = ['product_category' , 'category_id'];
     protected static $subQuery = '';
+    protected static $requestQuery = '';
 }

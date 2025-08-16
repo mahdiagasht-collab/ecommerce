@@ -1,4 +1,4 @@
 <?php
-if (category::where($GLOBALS['urlArray'][3]) -> delete() -> get()) {
+if (category::where(['category_id' , " '" . $GLOBALS['urlArray'][3] . "' "]) -> delete() -> get()) {
     echo '👍';
 }

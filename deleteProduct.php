@@ -1,4 +1,4 @@
 <?php
-if (product::where($GLOBALS['urlArray'][3]) -> delete() -> get()) {
+if (product::where(['product_id' , " '" . $GLOBALS['urlArray'][3] . "' "]) -> delete() -> get()) {
     echo '👍';
 }

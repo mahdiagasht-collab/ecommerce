@@ -1,5 +1,5 @@
 <?php
-$result = footer::create($_POST) -> get();
+$result = footer::createOrUpdate($_POST) -> get();
 if($result){ 
     ?>
      <div>
