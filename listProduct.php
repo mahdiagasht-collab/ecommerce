@@ -1,5 +1,5 @@
 <?php
-$result = product::select() -> from() -> category() -> get();
+$result = product::category() -> get();
 // die();
 $az = 0;
 $go = '';
@@ -18,8 +18,9 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     $arraysInUrl = explode(',', $GLOBALS['urlArray'][$i]);
     // pageInIt ------------------------------------------------------------------------
     if ($arraysInUrl[0] == 'pageInIt') {
+        $result = product::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> select() -> from() -> category() -> get();
 
-        $numRows = $arraysInUrl[2];
+        // $numRows = $arraysInUrl[2];
         if ($result -> num_rows < 10) {
             $pageRows = $result -> num_rows;
         }
@@ -63,14 +64,15 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         $pageInIt = 'serchPageInIt';
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
-            $result = product::limit($_POST) -> category();
+            $result = product::limit($_POST) -> select() -> from() -> category() -> get();
 
             $numRows = $result -> num_rows / 10;
             if ($result -> num_rows < 10) {
                 $pageRows = $result -> num_rows;
             }
         }else {
-            $result = product::limit([$arraysInUrl[1] + 0,$arraysInUrl[1] + 10]) -> category();
+            // $result = product::limit([$arraysInUrl[1] + 0,$arraysInUrl[1] + 10]) -> category();
+            $result = product::limit([$arraysInUrl[1] + 0,$arraysInUrl[1] + 10]) -> select() -> from() -> category() -> get();
             $numRows = $arraysInUrl[2];
 
             if ($result -> num_rows < 10) {
@@ -90,7 +92,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             $columnInQuestion = $arraysInUrl[3];
             $sortingType = urldecode($arraysInUrl[4]);
 
-            $result = product::from(['product' , 'category']) -> where() -> where([ $arraysInUrl[3] , " '" . urldecode($arraysInUrl[4]) . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> with(['category' => ['title']] , 'product_category');
+            $result = product::select() -> from(['product' , 'category']) -> where() -> where([ $arraysInUrl[3] , " '" . urldecode($arraysInUrl[4]) . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> get();
 
             $numRows = $arraysInUrl[2];
 
@@ -99,7 +101,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             $columnInQuestion = $_POST['columnInQuestion'];
             $sortingType = $_POST['textInQuestion'];
 
-            $result = product::from(['product' , 'category']) -> where() -> where([ $columnInQuestion , " '" . $sortingType . "' "]) -> with(['category' => ['title']] , 'product_category');
+            $result = product::select() -> where() -> from(['product' , 'category']) -> where([ $columnInQuestion , " '" . $sortingType . "' "]) -> get();
 
             $numRows = $result -> num_rows / 10;
 
@@ -151,7 +153,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         <!-- searchByColumns -------------------------------------------------------- -->
         <form action="http://localhost/ecommerce/listProduct/searchByColumns" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <select name='columnInQuestion' style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
-                <option value="product.id">id</option>
+                <option value="product.product_id">id</option>
                 <option value="product.name">name</option>
                 <option value="product.price">price</option>
                 <option value="category.title">category</option>

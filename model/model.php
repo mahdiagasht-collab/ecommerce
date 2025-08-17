@@ -69,7 +69,7 @@ class model extends mainDB{
 
 
     public static function all(array $fields=['*']){
-        return self::select($fields) -> get();
+        return self::select($fields) -> from() -> get();
     }
     public static function count(){
         return static::makeOBJ() -> get(['count(*)']) -> fetch_assoc()['count(*)'];
@@ -190,8 +190,13 @@ class model extends mainDB{
 
 
     public function belongsTo(string $tableName){
-        $this -> join = 'INNER JOIN ' . $tableName;
+        $this -> join = ' INNER JOIN ' . $tableName;
         $this -> where();
+        return static::$OBJ;
+    }
+    protected function connectInBase(array $fields){
+
+        $this -> base .= ',' . implode(',' , $fields);
         return static::$OBJ;
     }
 
@@ -203,26 +208,25 @@ class model extends mainDB{
 
 
     
-    public static function with($tableName){
-        // foreach ($requiredValuesForSubqueryRequest as $tableName => $fields) {
-        //     // static::$subQuery = $tableName::select($fields) -> where(static::$related) -> getSQL($alies);
-        //     static::$subQuery = $tableName::category($fields) -> getSQL($alies);
-        // }
+    public static function withProductCount(){
+        (static::makeOBJ());
+        if (static::$table == 'category') {
+            $tableName = 'product';
+        } elseif (static::$table == 'product') {
+            $tableName = 'category';
+        }
         static::$subQuery = $tableName::select(['count(*) ']) -> where(static::$related) -> getSQL('categoryProductCount');
         // return (static::makeOBJ()) -> get();
         return static::$OBJ;
     }
 
-    private function getSQL(string $alies){
+    protected function getSQL(string $alies){
         if ($this -> base == '') { $this -> select(['count(*) count']); }
-        // if ($this -> from == '') { $this -> from(); }
-        // if ($this -> type == '') {
-            if ($this -> from == '') { $this -> from(); } 
-            if ($this -> join == '') { $this -> on = ''; } else { 
-                $this -> where = '';
-                if ($this -> on == '') { $this -> where(); }
-            }
-        // }
+        if ($this -> from == '') { $this -> from(); } 
+        if ($this -> join == '') { $this -> on = ''; } else { 
+            $this -> where = '';
+            if ($this -> on == '') { $this -> where(); }
+        }
         
         $base =     $this -> base;
         $from =     $this -> from;
@@ -309,16 +313,15 @@ class model extends mainDB{
 
 
 
-    public function get(){
-    // public function get(array $fields = ['*']){
-        // if ($this -> base == '') { $this -> select($fields); }
-        // if ($this -> type == '') {
-        //     if ($this -> from == '') { $this -> from(); } 
-        //     if ($this -> join == '') { $this -> on = ''; } else { 
-        //         $this -> where = '';
-        //         if ($this -> on == '') { $this -> where(); }
-        //     }
-        // }
+    public function get(array $fields = ['*']){
+        if ($this -> base == '') { $this -> select($fields); }
+        if ($this -> type == '') {
+            if ($this -> from == '') { $this -> from(); } 
+            if ($this -> join == '') { $this -> on = ''; } else { 
+                $this -> where = '';
+                if ($this -> on == '') { $this -> where(); }
+            }
+        }
         
         $base =     $this -> base;
         $from =     $this -> from;
@@ -337,5 +340,5 @@ class model extends mainDB{
         static::$subQuery = '';
 
         return static::$returnedMysqlOBJ = $this -> sendQuery($base . $subQuery . $from . $join . $on . $where . $limit);
-    }
+    }   
 }
