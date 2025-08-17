@@ -9,7 +9,7 @@ $result = category::select(["category_id" , "title"])->product(['title' , "produ
 var_dump($result);
 // foreach ($result as $value) {
 //     echo '<br>';
-//     echo '<br>';
+//     echo '<br>'; 
 //     echo 'category_id :      ';
 //     echo $value['category_id'];
 //     echo '<br>';

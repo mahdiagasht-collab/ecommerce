@@ -281,7 +281,7 @@ class model extends mainDB{
     }
     public static function limit(array $data){
         // var_dump($data);
-        if (count($data) == 1) {
+        if (count($data) == 1) { 
             $limit = $data[0];
             $ofset = 10;
         }else {
