@@ -61,26 +61,24 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     }
     // serchPageInIt ------------------------------------------------------------------------
     if ($arraysInUrl[0] == 'serchPageInIt') {
+        $pageInIt = 'serchPageInIt';
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
             $result = user::limit($_POST) -> all();
 
-            $value1 = $_POST[0];
-            $value2 = $_POST[1];
             echo '😤';
             $numRows = $result -> num_rows / 10;
+            var_dump($numRows);
             if ($result -> num_rows < 10) {
                 $pageRows = $result -> num_rows;
             }
         }else {
-            $result = user::limit([$arraysInUrl[1] + ($arraysInUrl[3] . 0),$arraysInUrl[2]]) -> all();
+            $result = user::limit([$arraysInUrl[1] + 0 , $arraysInUrl[1] + 10]) -> all();
             echo '😤';
             
-            $value1 = $arraysInUrl[1];
-            $value2 = $arraysInUrl[2];
+            $numRows = $arraysInUrl[2];
             
-            $numRows = $arraysInUrl[4];
-
+            var_dump($numRows);
             if ($result -> num_rows < 10) {
                 $pageRows = $result -> num_rows;
             }
