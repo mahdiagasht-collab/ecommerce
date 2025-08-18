@@ -208,6 +208,15 @@ class model extends mainDB{
 
 
     
+    public static function with(){
+        (static::makeOBJ());
+        if (static::$table == 'category') { $tableName = 'product'; } elseif (static::$table == 'product') { $tableName = 'category'; }
+        static::$subQuery = $tableName::makeOBJ() -> getSQL('categoryProductCount');
+        return static::$OBJ;
+    }
+
+
+
     public static function withProductCount(){
         (static::makeOBJ());
         if (static::$table == 'category') {

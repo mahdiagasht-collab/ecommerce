@@ -1,12 +1,12 @@
 <?php
 // category::with(['product' => ['count(*) ']] , 'categoryProductCount');
-//  $result = category::with('product') -> get();
+ $result = category::with('product') -> get();
 
 
 //  $result = category::withProductCount()->get();
 
-$result = category::select(["category_id" , "title"])->product(['title' , "product_id" , "price"]) -> get();
-var_dump($result);
+// $result = category::select(["category_id" , "title"])->product(['title' , "product_id" , "price"]) -> get();
+// var_dump($result);
 // foreach ($result as $value) {
 //     echo '<br>';
 //     echo '<br>'; 
@@ -41,34 +41,11 @@ if ($result -> num_rows < 10) {
 }
 $numRows = $result -> num_rows / 10;
 
-function pageInIt($arraysInUrl){
-    return category::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> with('product') -> get();
-    
-    // $pageRows = 10;
-    // if ($result -> num_rows < 10) {
-        //     $pageRows = $result -> num_rows;
-        // }
-        // return ['result' => $result , 'pageRows' => $pageRows];
-    }
-    
-    
     for ($i=3; $i < count($GLOBALS['urlArray']); $i++) { 
         $arraysInUrl = explode(',', $GLOBALS['urlArray'][$i]);
         // pageInIt ------------------------------------------------------------------------
         if ($arraysInUrl[0] == 'pageInIt') {
-            
-        //     $result = pageInIt($arraysInUrl);
-            
-        //     if ($result -> num_rows < 10) {
-        //         $pageRows = $result -> num_rows;
-        //     }
-        // // foreach ($array as $nameVarable => $valueVarable) {
-        // //     $$nameVarable = $valueVarable;
-        // // }
-
-        // $result = category::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> with(['product' => ['count(*) ']] , 'categoryProductCount');
-        $result = category::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> select() -> from(['category']) -> with('product') -> get();
-        // $numRows = $arraysInUrl[2];
+        $result = category::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> select() -> from(['category']) -> withProductCount() -> get();
         if ($result -> num_rows < 10) {
             $pageRows = $result -> num_rows;
         }
@@ -107,7 +84,7 @@ function pageInIt($arraysInUrl){
     if ($arraysInUrl[0] == 'serchPageInIt') {
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
-            $result = category::limit($_POST) -> with('product') -> get();
+            $result = category::limit($_POST) -> withProductCount() -> get();
 
             $value1 = $_POST[0];
             $value2 = $_POST[1];
@@ -117,7 +94,7 @@ function pageInIt($arraysInUrl){
                 $pageRows = $result -> num_rows;
             }
         }else {
-            $result = category::limit([$arraysInUrl[1] + ($arraysInUrl[3] . 0),$arraysInUrl[2]]) -> with('product') -> get();
+            $result = category::limit([$arraysInUrl[1] + ($arraysInUrl[3] . 0),$arraysInUrl[2]]) -> withProductCount() -> get();
             echo '😤';
             
             $value1 = $arraysInUrl[1];
@@ -141,7 +118,7 @@ function pageInIt($arraysInUrl){
             $columnInQuestion = $arraysInUrl[3];
             $sortingType = urldecode($arraysInUrl[4]);
             
-            $result = category::where( [$columnInQuestion , " '" . $sortingType . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> with('product') -> get();
+            $result = category::where( [$columnInQuestion , " '" . $sortingType . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> withProductCount() -> get();
             
             
             $az = $arraysInUrl[1] + 0;
@@ -151,7 +128,7 @@ function pageInIt($arraysInUrl){
             $columnInQuestion = $_POST['columnInQuestion'];
             $sortingType = urldecode($_POST['textInQuestion']);
             
-            $result = category::where([$columnInQuestion , " '" . $sortingType . "' "]) -> with('product') -> get();
+            $result = category::where([$columnInQuestion , " '" . $sortingType . "' "]) -> withProductCount() -> get();
 
             echo $numRows = $result -> num_rows / 10;
             
