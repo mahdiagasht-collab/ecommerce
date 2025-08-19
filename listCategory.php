@@ -1,32 +1,7 @@
 <?php
-// category::with(['product' => ['count(*) ']] , 'categoryProductCount');
- $result = category::with('product') -> get();
+$result = category::withProductCount() -> get();
+// die();
 
-
-//  $result = category::withProductCount()->get();
-
-// $result = category::select(["category_id" , "title"])->product(['title' , "product_id" , "price"]) -> get();
-// var_dump($result);
-// foreach ($result as $value) {
-//     echo '<br>';
-//     echo '<br>'; 
-//     echo 'category_id :      ';
-//     echo $value['category_id'];
-//     echo '<br>';
-//     echo 'title :      ';
-//     echo $value['title'];
-//     echo '<br>';
-//     echo 'product_id :      ';
-//     echo $value['product_id'];
-//     echo '<br>';
-//     echo 'price :      ';
-//     echo $value['price'];
-//     echo '<br>';
-// }
-
-
-die();
-// $result = category::getReturnedOBJ();
 $az = 0;
 $pageRows = 10;
 $ofset = 0;
@@ -50,14 +25,14 @@ $numRows = $result -> num_rows / 10;
             $pageRows = $result -> num_rows;
         }
     }
-    // pageInItPrice ----------------------------------------------------------------------
-    if ($arraysInUrl[0] == 'pageInItPrice') {
+    // sort ----------------------------------------------------------------------
+    if ($arraysInUrl[0] == 'sort') {
         echo '🤨';
-        $pageInIt = 'pageInItPrice';
+        $pageInIt = 'sort';
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
             
-            $basicValue = $result = category::pageInItPrice($_POST);
+            $result = category::sort($_POST) -> withProductCount() -> get();
             
             $columnInQuestion = $_POST['columnInQuestion'];
             $sortingType = $_POST['sortingType'];
@@ -67,18 +42,15 @@ $numRows = $result -> num_rows / 10;
             $columnInQuestion = $arraysInUrl[3];
             $sortingType = $arraysInUrl[4];
             $data = ['columnInQuestion' => $columnInQuestion , 'sortingType' => $sortingType];
-            $basicValue = $result = category::pageInItPrice($data);
+            $result = category::sort($data) -> withProductCount() -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> get();
             $az = $arraysInUrl[1] + 0;
-            $numRows = $arraysInUrl[2];
-            if (count($result) - $az < 10) {
-                $pageRows = count($result);
+            echo $numRows = $arraysInUrl[2];
+            if ($result -> num_rows < 10) {
+                $pageRows = $result -> num_rows + $az;
             }else {
                 $pageRows = $az + 10;
             }
         }
-
-        $ta = count($result);
-
     }
     // serchPageInIt ------------------------------------------------------------------------
     if ($arraysInUrl[0] == 'serchPageInIt') {
@@ -166,15 +138,15 @@ $numRows = $result -> num_rows / 10;
 <?php } ?>
 
 <div style = "display: flex;flex-direction: row-reverse;justify-content: center;width: 100%;">
-    <!-- pageInItPrice ---------------------------------------------------------- -->
+    <!-- sort ---------------------------------------------------------- -->
     <div style="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: column;align-items: center;width: 20%;">
-        <form action="http://localhost/ecommerce/listCategory/pageInItPrice" method = "post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
+        <form action="http://localhost/ecommerce/listCategory/sort" method = "post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <select name="columnInQuestion" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
                 <option value="category_id">id</option>
             </select>
             <select name="sortingType" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
-                <option value="decs">decs</option>
-                <option value="acs">acs</option>
+                <option value="DESC">DESC</option>
+                <option value="ASC">ASC</option>
             </select>
             <button style="margin: 10px;padding: 5px;border-radius: 10px;border: none;background: none;">send</button>
         </form>

@@ -6,6 +6,7 @@ class model extends mainDB{
     private $from = '';
     private $join = '';
     private $on = '';
+    private $sort = '';
     private $type = '';
 
 
@@ -78,77 +79,16 @@ class model extends mainDB{
         return static::makeOBJ() -> select() -> limit([1]) -> get();
     }
 
-    public static function pageInItPrice(array $data = []){
-        $result =  static::$returnedMysqlOBJ;
-        $prices[0] = $result -> fetch_assoc();
-        var_dump($data);
-        $columnInQuestion = $data['columnInQuestion'];
-        $sortingType = $data['sortingType'];
-        if ($sortingType == 'decs') {
-            $a = [];
-            for ($i=1; $i < $result -> num_rows; $i++) { 
-                $prices[$i] = $result -> fetch_assoc();
-                $b = $i;
-                for ($c=1; $c < count($prices); $c++) { 
-                    if ($prices[$b - 1][$columnInQuestion] < $prices[$b][$columnInQuestion]) {
-                        $a = $prices[$b];
-                        $prices[$b] = $prices[$b - 1];
-                        $prices[$b - 1] = $a;
-                        $b--;
-                    }
-                }
-            }
-        }else {
-            $a = [];
-            for ($i=1; $i < $result -> num_rows; $i++) { 
-                $prices[$i] = $result -> fetch_assoc();
-                $b = $i;
-                for ($c=1; $c < count($prices); $c++) { 
-                    if ($prices[$b - 1][$columnInQuestion] > $prices[$b][$columnInQuestion]) {
-                        $a = $prices[$b];
-                        $prices[$b] = $prices[$b - 1];
-                        $prices[$b - 1] = $a;
-                        $b--;
-                    }
-                }
-            }
-        }
-        return $prices;
+    public static function sort(array $data = []){
+        (static::makeOBJ()) -> sort = ' ORDER BY ' . $data['columnInQuestion'] . ' ' . $data['sortingType'];
+        return static::$OBJ;
     }
 
 
-    public static function sort($column , $sortingType){
-        
-        $result =  static::getReturnedOBJ();
-        $prices[0] = $result -> fetch_assoc();
-        // var_dump($prices);
-        $a = [];
-        for ($i=1; $i < $result -> num_rows; $i++) { 
-            $prices[$i] = $result -> fetch_assoc();
-            $b = $i;
-            for ($c=1; $c < count($prices); $c++) { 
-                if ($sortingType == 'decs') {
-                    // $sortingType = '<';
-                    if ($prices[$b - 1]['price'] < $prices[$b]['price']) {
-                        $a = $prices[$b];
-                        $prices[$b] = $prices[$b - 1];
-                        $prices[$b - 1] = $a;
-                        $b--;
-                    }
-                }else {
-                    // $sortingType = '>';
-                    if ($prices[$b - 1]['price'] > $prices[$b]['price']) {
-                        $a = $prices[$b];
-                        $prices[$b] = $prices[$b - 1];
-                        $prices[$b - 1] = $a;
-                        $b--;
-                    }
-                }
-            }
-        }
-        // var_dump($prices);
-        return $prices;
-    }
+
+
+
+    
     private function selectWithinSelect(array $internalSelectValues){
         // for ($i=0; $i < count($internalSelectValues); $i++) { 
         //     $internalSelectValues[$i];
@@ -338,6 +278,7 @@ class model extends mainDB{
         $on =       $this -> on;
         $where =    $this -> where;
         $limit =    $this -> limit;
+        $sort =     $this -> sort;
         $subQuery = static::$subQuery;
         
         $this -> base = '';
@@ -346,8 +287,9 @@ class model extends mainDB{
         $this -> on = '';
         $this -> where = '';
         $this -> limit = '';
+        $this -> sort = '';
         static::$subQuery = '';
 
-        return static::$returnedMysqlOBJ = $this -> sendQuery($base . $subQuery . $from . $join . $on . $where . $limit);
+        return static::$returnedMysqlOBJ = $this -> sendQuery($base . $subQuery . $from . $join . $sort . $on . $where . $limit);
     }   
 }
