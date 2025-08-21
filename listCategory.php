@@ -2,26 +2,26 @@
 // $result = category::withProductCount() -> get();
 
 
-$result = category::case(' description ' , '=' , " '' " , 'این دسته بندی توضیحات ندارد') -> caseELSEAndENDAndAlies('description' , 'description') -> locationCase('base') -> withProductCount() -> get();
+// $result = category::case(' description ' , '=' , " '' " , 'این دسته بندی توضیحات ندارد') -> caseELSEAndENDAndAlies('description' , 'description') -> locationCase('base') -> withProductCount() -> get();
 
 
 
-foreach ($result as $value) {
-    echo '<br>';
-    echo '<br>'; 
-    echo 'category_id :      ';
-    echo $value['category_id'];
-    echo '<br>';
-    echo 'title :      ';
-    echo $value['title'];
-    echo '<br>';
-    echo 'description :      ';
-    echo $value['description'];
-    echo '<br>';
-}
+// foreach ($result as $value) {
+//     echo '<br>';
+//     echo '<br>'; 
+//     echo 'category_id :      ';
+//     echo $value['category_id'];
+//     echo '<br>';
+//     echo 'title :      ';
+//     echo $value['title'];
+//     echo '<br>';
+//     echo 'description :      ';
+//     echo $value['description'];
+//     echo '<br>';
+// }
 // -----------------------------------------------------------
 
-// $result = category::if();
+$result = category::if();
 
 
 

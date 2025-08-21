@@ -10,9 +10,9 @@ class model extends mainDB{
     private $type = '';
 
     
-    private $case = '';
+    private $if = '';
     private $valueInELSEInCase = '';
-    private $locationCase = '';
+    private $location = '';
 
 
 
@@ -175,20 +175,33 @@ class model extends mainDB{
     
     
     public static function case(string $colomnInQuestion , string $ifType , string $valueInQuestion , string $printValue , string $valueInELSE = ''){
-        (static::makeOBJ()) -> case .= ' CASE WHEN ' . $colomnInQuestion . ' ' . $ifType . ' ' . $valueInQuestion . ' THEN ' . " '" . $printValue . "' ";
+        (static::makeOBJ()) -> if .= ' CASE WHEN ' . $colomnInQuestion . ' ' . $ifType . ' ' . $valueInQuestion . ' THEN ' . " '" . $printValue . "' ";
         if ($valueInELSE != '') {
-            static::$OBJ -> caseELSE($valueInELSE);
+            static::$OBJ -> ifELSE($valueInELSE);
         }
         return static::$OBJ;
     }
-    public function caseELSEAndENDAndAlies(string $valueInELSE , string $alies){
+    public function ifELSEAndENDAndAlies(string $valueInELSE , string $alies){
         (static::makeOBJ()) -> valueInELSEInCase = 'ELSE ' . $valueInELSE . ' END ' . $alies;
         return static::$OBJ;
     }
-    public function locationCase(string $location){
-        $this -> locationCase = $location;
+    // ----------------------------------------
+    public function if(string $colomnInQuestion , string $ifType , string $valueInQuestion , string $printValue , string $valueIsIfNull = '' , string $alies){
+        (static::makeOBJ()) -> if .= 'IF ( ' . $colomnInQuestion . ' ' . $ifType . ' ' . $valueInQuestion . ' , ' . " '" . $printValue . "' " . " '" . $valueIsIfNull . "' )" . $alies;
+    }
+
+
+
+    public function location(string $location){
+        $this -> location = $location;
         return static::$OBJ;
     }
+
+
+
+
+
+
 
 
 
@@ -273,13 +286,13 @@ class model extends mainDB{
                 if ($this -> on == '') { $this -> where(); }
             }
         }
-        
-        if ($this -> locationCase == 'base') {
-            $this -> base .= ',' . $this -> case . ' ' . $this -> valueInELSEInCase ; 
-        } elseif ($this -> locationCase == 'where') {
-            $this -> where .= ',' . $this -> case . ' ' . $this -> valueInELSEInCase ; 
+        if($this -> if != ''){
+            if ($this -> location == 'base') {
+                $this -> base .= ',' . $this -> if . ' ' . $this -> valueInELSEInCase ; 
+            } elseif ($this -> location == 'where') {
+                $this -> where .= ',' . $this -> if . ' ' . $this -> valueInELSEInCase ; 
+            }
         }
-        
         $base =     $this -> base;
         $from =     $this -> from;
         $join =     $this -> join;
