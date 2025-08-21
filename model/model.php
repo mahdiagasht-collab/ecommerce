@@ -9,6 +9,11 @@ class model extends mainDB{
     private $sort = '';
     private $type = '';
 
+    
+    private $case = '';
+    private $valueInELSEInCase = '';
+    private $locationCase = '';
+
 
 
     private static function getReturnedOBJ(){
@@ -85,39 +90,11 @@ class model extends mainDB{
     }
 
 
-
-
+    
+    
+    
 
     
-    private function selectWithinSelect(array $internalSelectValues){
-        // for ($i=0; $i < count($internalSelectValues); $i++) { 
-        //     $internalSelectValues[$i];
-        // }
-        $tableName = $internalSelectValues[0];
-        $columns = $internalSelectValues[1];
-        $valueForWhere = $internalSelectValues[2];
-        $aluse = $internalSelectValues[3];
-        
-        $newFields = '';
-        foreach ($columns as $key => $value) {
-            if ($newFields != '') { $newFields .= ' , ';}
-            if (is_string($value)) {
-                $newFields .= $value;
-            }else {
-                $newFields .= $this -> selectWithinSelect($value);
-            }
-        }
-
-        return ' ( ' . 'SELECT' . implode(' , ' , $columns) . 'FROM' . $tableName . $this -> makeWhereInColumn($valueForWhere) . ' ) ' . $aluse;
-    }
-    private function makeWhereInColumn(array $valueForWhere){
-        return ' WHERE '. $valueForWhere[0] . ' = ' . $valueForWhere[1];
-    }
-
-
-
-
-
     
     public static function from(array $tables = []){
         if ($tables == []) {
@@ -127,26 +104,26 @@ class model extends mainDB{
         }
         return static::$OBJ;
     }
-
-
+    
+    
     public function belongsTo(string $tableName){
         $this -> join = ' INNER JOIN ' . $tableName;
         $this -> where();
         return static::$OBJ;
     }
     protected function connectInBase(array $fields){
-
+        
         $this -> base .= ',' . implode(',' , $fields);
         return static::$OBJ;
     }
-
-
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
     
     public static function with(){
         (static::makeOBJ());
@@ -154,9 +131,9 @@ class model extends mainDB{
         static::$subQuery = $tableName::makeOBJ() -> getSQL('categoryProductCount');
         return static::$OBJ;
     }
-
-
-
+    
+    
+    
     public static function withProductCount(){
         (static::makeOBJ());
         if (static::$table == 'category') {
@@ -168,7 +145,7 @@ class model extends mainDB{
         // return (static::makeOBJ()) -> get();
         return static::$OBJ;
     }
-
+    
     protected function getSQL(string $alies){
         if ($this -> base == '') { $this -> select(['count(*) count']); }
         if ($this -> from == '') { $this -> from(); } 
@@ -181,7 +158,7 @@ class model extends mainDB{
         $from =     $this -> from;
         $where =    $this -> where;
         $limit =    $this -> limit;
-
+        
         $this -> base =      '';
         $this -> from =      '';
         $this -> where =     '';
@@ -194,8 +171,33 @@ class model extends mainDB{
 
 
 
-
     
+    
+    
+    public static function case(string $colomnInQuestion , string $ifType , string $valueInQuestion , string $printValue , string $valueInELSE = ''){
+        (static::makeOBJ()) -> case .= ' CASE WHEN ' . $colomnInQuestion . ' ' . $ifType . ' ' . $valueInQuestion . ' THEN ' . " '" . $printValue . "' ";
+        if ($valueInELSE != '') {
+            static::$OBJ -> caseELSE($valueInELSE);
+        }
+        return static::$OBJ;
+    }
+    public function caseELSEAndENDAndAlies(string $valueInELSE , string $alies){
+        (static::makeOBJ()) -> valueInELSEInCase = 'ELSE ' . $valueInELSE . ' END ' . $alies;
+        return static::$OBJ;
+    }
+    public function locationCase(string $location){
+        $this -> locationCase = $location;
+        return static::$OBJ;
+    }
+
+
+
+
+
+
+
+
+
     public static function where(array $requiredValues = []){
         
         
@@ -270,6 +272,12 @@ class model extends mainDB{
                 $this -> where = '';
                 if ($this -> on == '') { $this -> where(); }
             }
+        }
+        
+        if ($this -> locationCase == 'base') {
+            $this -> base .= ',' . $this -> case . ' ' . $this -> valueInELSEInCase ; 
+        } elseif ($this -> locationCase == 'where') {
+            $this -> where .= ',' . $this -> case . ' ' . $this -> valueInELSEInCase ; 
         }
         
         $base =     $this -> base;
