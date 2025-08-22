@@ -1,5 +1,7 @@
 <?php
 class model extends mainDB{
+    private $textQuery = '';
+
     private $base = '';
     private $where = '';
     private $limit = '';
@@ -128,7 +130,7 @@ class model extends mainDB{
     public static function with(){
         (static::makeOBJ());
         if (static::$table == 'category') { $tableName = 'product'; } elseif (static::$table == 'product') { $tableName = 'category'; }
-        static::$subQuery = $tableName::makeOBJ() -> getSQL('categoryProductCount');
+        static::$subQuery = $tableName::makeOBJ() -> getSQLWith('categoryProductCount');
         return static::$OBJ;
     }
     
@@ -141,12 +143,12 @@ class model extends mainDB{
         } elseif (static::$table == 'product') {
             $tableName = 'category';
         }
-        static::$subQuery = $tableName::select(['count(*) ']) -> where(static::$related) -> getSQL('categoryProductCount');
+        static::$subQuery = $tableName::select(['count(*) ']) -> where(static::$related) -> getSQLWith('categoryProductCount');
         // return (static::makeOBJ()) -> get();
         return static::$OBJ;
     }
     
-    protected function getSQL(string $alies){
+    protected function getSQLWith(string $alies){
         if ($this -> base == '') { $this -> select(['count(*) count']); }
         if ($this -> from == '') { $this -> from(); } 
         if ($this -> join == '') { $this -> on = ''; } else { 
@@ -175,13 +177,18 @@ class model extends mainDB{
     
     
     public static function case(string $colomnInQuestion , string $ifType , string $valueInQuestion , string $printValue , string $valueInELSE = ''){
-        (static::makeOBJ()) -> if .= ' CASE WHEN ' . $colomnInQuestion . ' ' . $ifType . ' ' . $valueInQuestion . ' THEN ' . " '" . $printValue . "' ";
+        if ((static::makeOBJ()) -> if == '') {
+            (static::makeOBJ()) -> if .= ' CASE WHEN ' . $colomnInQuestion . ' ' . $ifType . ' ' . $valueInQuestion . ' THEN ' . " '" . $printValue . "' ";
+        } else {
+            (static::makeOBJ()) -> if .= ' WHEN ' . $colomnInQuestion . ' ' . $ifType . ' ' . $valueInQuestion . ' THEN ' . " '" . $printValue . "' ";
+
+        }
         if ($valueInELSE != '') {
             static::$OBJ -> ifELSE($valueInELSE);
         }
         return static::$OBJ;
     }
-    public function ifELSEAndENDAndAlies(string $valueInELSE , string $alies){
+    public function caseELSEAndENDAndAlies(string $valueInELSE , string $alies){
         (static::makeOBJ()) -> valueInELSEInCase = 'ELSE ' . $valueInELSE . ' END ' . $alies;
         return static::$OBJ;
     }
@@ -275,9 +282,7 @@ class model extends mainDB{
 
 
 
-
-
-    public function get(array $fields = ['*']){
+    public function getSQL(array $fields = ['*']){
         if ($this -> base == '') { $this -> select($fields); }
         if ($this -> type == '') {
             if ($this -> from == '') { $this -> from(); } 
@@ -302,15 +307,21 @@ class model extends mainDB{
         $sort =     $this -> sort;
         $subQuery = static::$subQuery;
         
-        $this -> base = '';
-        $this -> from = '';
-        $this -> join = '';
-        $this -> on = '';
-        $this -> where = '';
-        $this -> limit = '';
-        $this -> sort = '';
-        static::$subQuery = '';
+        $this -> textQuery = $base . $subQuery . $from . $join . $sort . $on . $where . $limit;
 
-        return static::$returnedMysqlOBJ = $this -> sendQuery($base . $subQuery . $from . $join . $sort . $on . $where . $limit);
+        return static::$OBJ;
+    }
+
+    public function get(){
+        // $this -> base = '';
+        // $this -> from = '';
+        // $this -> join = '';
+        // $this -> on = '';
+        // $this -> where = '';
+        // $this -> limit = '';
+        // $this -> sort = '';
+        // static::$subQuery = '';
+        // var_dump($this -> textQuery);
+        return static::$returnedMysqlOBJ = $this -> sendQuery($this -> textQuery);
     }   
 }
