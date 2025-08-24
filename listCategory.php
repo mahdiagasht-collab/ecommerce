@@ -1,5 +1,132 @@
 <?php
-$result = category::withProductCount() -> get();
+
+// factory::factory('product') -> category();
+
+
+$result = category::withProductCount() -> getSQL() -> get();
+
+
+// $result = category::
+//     case(' point ' , '=' , " 0 " , 'امتیازی برای این دسته بندی ثبت نشده است') 
+// ->  case(' point ' , '=' , " 1 " , 'خیلی بد') 
+// ->  case(' point ' , '=' , " 2 " , 'بد') 
+// ->  case(' point ' , '=' , " 3 " , 'متوسط') 
+// ->  case(' point ' , '=' , " 4 " , 'خوب') 
+// ->  case(' point ' , '=' , " 5 " , 'خیلی خوب') 
+// ->  caseELSEAndENDAndAlies('point' , 'point') 
+// ->  location('base') 
+// ->  withProductCount() 
+// ->  getSQL() 
+// ->  get();
+
+
+
+
+// foreach ($result as $value) {
+//     echo '<br>';
+//     echo '<br>'; 
+//     echo 'category_id :      ';
+//     echo $value['category_id'];
+//     echo '<br>';
+//     echo 'title :      ';
+//     echo $value['title'];
+//     echo '<br>';
+//     echo 'description :      ';
+//     echo $value['category_description'];
+//     echo '<br>';
+//     echo 'point :      ';
+//     echo $value['point'];
+//     echo '<br>';
+// }
+// -----------------------------------------------------------
+
+// $result = category::if(' point ' , '=' , " 0 " , 'امتیازی برای این دسته بندی ثبت نشده است' , 'point' , 'point')
+// ->  location('base') 
+// ->  withProductCount() 
+// ->  getSQL() 
+// ->  get();
+
+
+
+
+// foreach ($result as $value) {
+//     echo '<br>';
+//     echo '<br>'; 
+//     echo 'category_id :      ';
+//     echo $value['category_id'];
+//     echo '<br>';
+//     echo 'title :      ';
+//     echo $value['title'];
+//     echo '<br>';
+//     echo 'description :      ';
+//     echo $value['category_description'];
+//     echo '<br>';
+//     echo 'point :      ';
+//     echo $value['point'];
+//     echo '<br>';
+// }
+    
+// -----------------------------------------------------------
+    
+// $result = category::ifNull(' point ' , '=' , " 0 " , 'امتیازی برای این دسته بندی ثبت نشده است' , 'point')
+// ->  location('base') 
+// ->  withProductCount() 
+// ->  getSQL() 
+// ->  get();
+    
+
+// foreach ($result as $value) {
+//     echo '<br>';
+//     echo '<br>'; 
+//     echo 'category_id :      ';
+//     echo $value['category_id'];
+//     echo '<br>';
+//     echo 'title :      ';
+//     echo $value['title'];
+//     echo '<br>';
+//     echo 'description :      ';
+//     echo $value['category_description'];
+//     echo '<br>';
+//     echo 'point :      ';
+//     echo $value['point'];
+//     echo '<br>';
+// }
+
+// -----------------------------------------------------------
+
+
+// $result = category::coalesce(' point ')
+// ->  coalesceAlies('point')
+// ->  location('base') 
+// ->  withProductCount() 
+// ->  getSQL() 
+// ->  get();
+
+
+// foreach ($result as $value) {
+//     echo '<br>';
+//     echo '<br>'; 
+//     echo 'category_id :      ';
+//     echo $value['category_id'];
+//     echo '<br>';
+//     echo 'title :      ';
+//     echo $value['title'];
+//     echo '<br>';
+//     echo 'description :      ';
+//     echo $value['category_description'];
+//     echo '<br>';
+//     echo 'point :      ';
+//     echo $value['point'];
+//     echo '<br>';
+// }
+
+// -----------------------------------------------------------
+
+
+
+
+
+
 // die();
 
 $az = 0;
@@ -20,7 +147,7 @@ $numRows = $result -> num_rows / 10;
         $arraysInUrl = explode(',', $GLOBALS['urlArray'][$i]);
         // pageInIt ------------------------------------------------------------------------
         if ($arraysInUrl[0] == 'pageInIt') {
-        $result = category::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> select() -> from(['category']) -> withProductCount() -> get();
+        $result = category::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> select() -> from(['category']) -> withProductCount() -> getSQL() -> get();
         if ($result -> num_rows < 10) {
             $pageRows = $result -> num_rows;
         }
@@ -32,7 +159,7 @@ $numRows = $result -> num_rows / 10;
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
             
-            $result = category::sort($_POST) -> withProductCount() -> get();
+            $result = category::sort($_POST) -> withProductCount() -> getSQL() -> get();
             
             $columnInQuestion = $_POST['columnInQuestion'];
             $sortingType = $_POST['sortingType'];
@@ -42,7 +169,7 @@ $numRows = $result -> num_rows / 10;
             $columnInQuestion = $arraysInUrl[3];
             $sortingType = $arraysInUrl[4];
             $data = ['columnInQuestion' => $columnInQuestion , 'sortingType' => $sortingType];
-            $result = category::sort($data) -> withProductCount() -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> get();
+            $result = category::sort($data) -> withProductCount() -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> getSQL() -> get();
             $az = $arraysInUrl[1] + 0;
             echo $numRows = $arraysInUrl[2];
             if ($result -> num_rows < 10) {
@@ -56,7 +183,7 @@ $numRows = $result -> num_rows / 10;
     if ($arraysInUrl[0] == 'serchPageInIt') {
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
-            $result = category::limit($_POST) -> withProductCount() -> get();
+            $result = category::limit($_POST) -> withProductCount() -> getSQL() -> get();
 
             $value1 = $_POST[0];
             $value2 = $_POST[1];
@@ -66,7 +193,7 @@ $numRows = $result -> num_rows / 10;
                 $pageRows = $result -> num_rows;
             }
         }else {
-            $result = category::limit([$arraysInUrl[1] + ($arraysInUrl[3] . 0),$arraysInUrl[2]]) -> withProductCount() -> get();
+            $result = category::limit([$arraysInUrl[1] + ($arraysInUrl[3] . 0),$arraysInUrl[2]]) -> withProductCount() -> getSQL() -> get();
             echo '😤';
             
             $value1 = $arraysInUrl[1];
@@ -90,7 +217,7 @@ $numRows = $result -> num_rows / 10;
             $columnInQuestion = $arraysInUrl[3];
             $sortingType = urldecode($arraysInUrl[4]);
             
-            $result = category::where( [$columnInQuestion , " '" . $sortingType . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> withProductCount() -> get();
+            $result = category::where( [$columnInQuestion , " '" . $sortingType . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> withProductCount() -> getSQL() -> get();
             
             
             $az = $arraysInUrl[1] + 0;
@@ -100,7 +227,7 @@ $numRows = $result -> num_rows / 10;
             $columnInQuestion = $_POST['columnInQuestion'];
             $sortingType = urldecode($_POST['textInQuestion']);
             
-            $result = category::where([$columnInQuestion , " '" . $sortingType . "' "]) -> withProductCount() -> get();
+            $result = category::where([$columnInQuestion , " '" . $sortingType . "' "]) -> withProductCount() -> getSQL() -> get();
 
             echo $numRows = $result -> num_rows / 10;
             
@@ -165,7 +292,7 @@ $numRows = $result -> num_rows / 10;
             <select name='columnInQuestion' style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
                 <option value="category.category_id">id</option>
                 <option value="category.title">title</option>
-                <option value="category.description">description</option>
+                <option value="category_description">description</option>
             </select>
             <input name="textInQuestion" value="<?php if(!empty($value1)){ echo $value1; } ?>" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
             <button style="margin: 10px;padding: 5px;border-radius: 10px;border: none;background: none;">send</button>
@@ -183,7 +310,7 @@ $numRows = $result -> num_rows / 10;
                     <?= $value['title'] ?>
                 </div>
                 <div style="width: 300px;display: flex;justify-content: center;">
-                    <?= $value['description'] ?>
+                    <?= $value['category_description'] ?>
                 </div>
                 <div style="width: 300px;display: flex;justify-content: center;">
                     <?= $value['categoryProductCount'] ?>

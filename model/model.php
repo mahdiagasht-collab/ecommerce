@@ -1,5 +1,7 @@
 <?php
 class model extends mainDB{
+    private $textQuery = '';
+
     private $base = '';
     private $where = '';
     private $limit = '';
@@ -9,44 +11,46 @@ class model extends mainDB{
     private $sort = '';
     private $type = '';
 
+    
+    private $if = '';
+    private $valueInELSEInCase = '';
+    private $location = '';
+
+    private $groupBy = '';
 
 
     private static function getReturnedOBJ(){
         return static::$returnedMysqlOBJ;
     }
     protected static function makeOBJ(){
-        if (static::$OBJ === null) {
-            echo '👌';
-            return static::$OBJ = new static;
-        }
-        return static::$OBJ;
+        return factory::factory(static::class);
     }
 
     
     public static function select(array $fields=['*']){
-        (static::makeOBJ()) -> base = 'SELECT ' . implode(',' , $fields);
-        return static::$OBJ;
+        static::makeOBJ() -> base = 'SELECT ' . implode(',' , $fields);
+        return static::makeOBJ();
     }
     public static function find($id){
         static::makeOBJ();
         return static::$connection -> query('SELECT * FROM ' . static::class . ' WHERE id = ' . $id);
     }
     public function delete(){
-        (static::makeOBJ()) -> base = "DELETE ";
-        return static::$OBJ;
+        static::makeOBJ() -> base = "DELETE ";
+        return static::makeOBJ();
     }
     public static function update(array $data){
-        (static::makeOBJ()) -> type = 'update';
+        static::makeOBJ() -> type = 'update';
         $TableValues = '';
         foreach ($data as $key => $value) {
             if ($TableValues != '') { $TableValues .= ' , ';}
             $TableValues .= $key . " = '" . $value . "' ";
         }
-        (static::makeOBJ()) -> base = 'UPDATE '. static::$table . ' SET ' . $TableValues;
-        return static::$OBJ;
+        static::makeOBJ() -> base = 'UPDATE '. static::$table . ' SET ' . $TableValues;
+        return static::makeOBJ();
     }
     public static function create(array $data){
-        (static::makeOBJ()) -> type = 'update';
+        static::makeOBJ() -> type = 'update';
         $columnName = '';
         $columnValues = '';
         foreach ($data as $key => $value) {
@@ -55,8 +59,8 @@ class model extends mainDB{
             $columnName .= $key;
             $columnValues .= " '" . $value . "' ";
         }
-        (static::makeOBJ()) -> base = 'INSERT INTO '. static::$table . ' ( ' . $columnName . ' ) VALUES (' . $columnValues . ' ) ';
-        return static::$OBJ;
+        static::makeOBJ() -> base = 'INSERT INTO '. static::$table . ' ( ' . $columnName . ' ) VALUES (' . $columnValues . ' ) ';
+        return static::makeOBJ();
     }
     public static function createOrUpdate(array $data){
         if (static::all() -> num_rows == 1){
@@ -70,93 +74,65 @@ class model extends mainDB{
 
 
     public static function all(array $fields=['*']){
-        return self::select($fields) -> from() -> get();
+        return static::select($fields) -> from() -> getSQL() -> get();
     }
     public static function count(){
-        return static::makeOBJ() -> get(['count(*)']) -> fetch_assoc()['count(*)'];
+        return static::makeOBJ() ->  getSQL() -> get(['count(*)']) -> fetch_assoc()['count(*)'];
     }
     public static function frist(){
-        return static::makeOBJ() -> select() -> limit([1]) -> get();
+        return static::makeOBJ() -> select() -> limit([1]) -> getSQL() -> get();
     }
 
     public static function sort(array $data = []){
-        (static::makeOBJ()) -> sort = ' ORDER BY ' . $data['columnInQuestion'] . ' ' . $data['sortingType'];
-        return static::$OBJ;
+        static::makeOBJ() -> sort = ' ORDER BY ' . $data['columnInQuestion'] . ' ' . $data['sortingType'];
+        return static::makeOBJ();
     }
-
-
-
 
 
     
-    private function selectWithinSelect(array $internalSelectValues){
-        // for ($i=0; $i < count($internalSelectValues); $i++) { 
-        //     $internalSelectValues[$i];
-        // }
-        $tableName = $internalSelectValues[0];
-        $columns = $internalSelectValues[1];
-        $valueForWhere = $internalSelectValues[2];
-        $aluse = $internalSelectValues[3];
-        
-        $newFields = '';
-        foreach ($columns as $key => $value) {
-            if ($newFields != '') { $newFields .= ' , ';}
-            if (is_string($value)) {
-                $newFields .= $value;
-            }else {
-                $newFields .= $this -> selectWithinSelect($value);
-            }
-        }
+    
+    
 
-        return ' ( ' . 'SELECT' . implode(' , ' , $columns) . 'FROM' . $tableName . $this -> makeWhereInColumn($valueForWhere) . ' ) ' . $aluse;
-    }
-    private function makeWhereInColumn(array $valueForWhere){
-        return ' WHERE '. $valueForWhere[0] . ' = ' . $valueForWhere[1];
-    }
-
-
-
-
-
+    
     
     public static function from(array $tables = []){
         if ($tables == []) {
-            (static::makeOBJ()) -> from = ' FROM ' . static::$table;
+            static::makeOBJ() -> from = ' FROM ' . static::$table;
         }else {
-            (static::makeOBJ()) -> from = ' FROM ' . implode(',' , $tables);
+            static::makeOBJ() -> from = ' FROM ' . implode(',' , $tables);
         }
-        return static::$OBJ;
+        return static::makeOBJ();
     }
-
-
-    public function belongsTo(string $tableName){
-        $this -> join = ' INNER JOIN ' . $tableName;
+    
+    
+    public function belongsTo(string $typeJoin , string $tableName){
+        $this -> join = $typeJoin . ' JOIN ' . $tableName;
         $this -> where();
-        return static::$OBJ;
+        return static::makeOBJ();
     }
     protected function connectInBase(array $fields){
-
+        
         $this -> base .= ',' . implode(',' , $fields);
-        return static::$OBJ;
+        return static::makeOBJ();
     }
-
-
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
     
     public static function with(){
         (static::makeOBJ());
         if (static::$table == 'category') { $tableName = 'product'; } elseif (static::$table == 'product') { $tableName = 'category'; }
-        static::$subQuery = $tableName::makeOBJ() -> getSQL('categoryProductCount');
-        return static::$OBJ;
+        static::$subQuery = $tableName::makeOBJ() -> getSQLWith('categoryProductCount');
+        return static::makeOBJ();
     }
-
-
-
+    
+    
+    
     public static function withProductCount(){
         (static::makeOBJ());
         if (static::$table == 'category') {
@@ -164,12 +140,12 @@ class model extends mainDB{
         } elseif (static::$table == 'product') {
             $tableName = 'category';
         }
-        static::$subQuery = $tableName::select(['count(*) ']) -> where(static::$related) -> getSQL('categoryProductCount');
-        // return (static::makeOBJ()) -> get();
-        return static::$OBJ;
+        static::$subQuery = $tableName::select(['count(*) ']) -> where(static::$related) -> getSQLWith('categoryProductCount');
+        // return static::makeOBJ() -> get();
+        return static::makeOBJ();
     }
-
-    protected function getSQL(string $alies){
+    
+    protected function getSQLWith(string $alies){
         if ($this -> base == '') { $this -> select(['count(*) count']); }
         if ($this -> from == '') { $this -> from(); } 
         if ($this -> join == '') { $this -> on = ''; } else { 
@@ -181,7 +157,7 @@ class model extends mainDB{
         $from =     $this -> from;
         $where =    $this -> where;
         $limit =    $this -> limit;
-
+        
         $this -> base =      '';
         $this -> from =      '';
         $this -> where =     '';
@@ -194,8 +170,75 @@ class model extends mainDB{
 
 
 
+    
+    
+    
+    public static function case(string $colomnInQuestion , string $ifType , string $valueInQuestion , string $printValue){
+        // echo static::class;
+        // var_dump(static::makeOBJ());
+        // die();   
+        if (static::makeOBJ() -> if == '') {
+            static::makeOBJ() -> if .= ' CASE WHEN ' . $colomnInQuestion . ' ' . $ifType . ' ' . $valueInQuestion . ' THEN ' . " '" . $printValue . "' ";
+        } else {
+            static::makeOBJ() -> if .= ' WHEN ' . $colomnInQuestion . ' ' . $ifType . ' ' . $valueInQuestion . ' THEN ' . " '" . $printValue . "' ";
+
+        }
+        return static::makeOBJ();
+    }
+    public function caseELSEAndENDAndAlies(string $valueInELSE , string $alies){
+        static::makeOBJ() -> valueInELSEInCase = 'ELSE ' . $valueInELSE . ' END ' . $alies;
+        return static::makeOBJ();
+    }
+    // ----------------------------------------
+    public static function if(string $colomnInQuestion , string $ifType , string $valueInQuestion , string $printValue , string $valueIsIfNull = '' , string $alies){
+        static::makeOBJ() -> if .= 'IF ( ' . $colomnInQuestion . ' ' . $ifType . ' ' . $valueInQuestion . ' , ' . " '" . $printValue . "' , " . $valueIsIfNull . " ) " . $alies;
+        return static::makeOBJ();
+    }
+    // ----------------------------------------
+    public static function ifNull(string $colomnInQuestion , string $ifType , string $valueInQuestion , string $printValue , string $alies){
+        static::makeOBJ() -> if .= 'IFNULL ( ' . $colomnInQuestion . ' ' . $ifType . ' ' . $valueInQuestion . ' , ' . " '" . $printValue . "' ) " . $alies;
+        return static::makeOBJ();
+    }
+    // ----------------------------------------
+    public static function coalesce(string $colomnInQuestion){
+        if (static::makeOBJ() -> if == '') {
+            static::makeOBJ() -> if .= 'COALESCE ( ' . $colomnInQuestion;
+        } else {
+            static::makeOBJ() -> if .= ' , ' . $colomnInQuestion;
+        }
+        return static::makeOBJ();
+    }
+    public function coalesceAlies(string $alies){
+        static::makeOBJ() -> valueInELSEInCase = ' ) ' . $alies;
+        return static::makeOBJ();
+    }
+    // ----------------------------------------
 
     
+
+    public function location(string $location){
+        $this -> location = $location;
+        return static::makeOBJ();
+    }
+
+
+
+
+
+
+
+
+    public static function groupBy(string $colomnInQuestion){
+        static::makeOBJ() -> groupBy = ' GROUP BY ' . $colomnInQuestion ;
+
+        return static::makeOBJ();
+    }
+
+
+
+
+
+
     public static function where(array $requiredValues = []){
         
         
@@ -213,20 +256,20 @@ class model extends mainDB{
 
 
 
-        if ((static::makeOBJ()) -> join == ''){
-            if ((static::makeOBJ()) -> where == '') {
-                (static::makeOBJ()) -> where = ' WHERE '. $columnName . ' = ' . $columnValue;
+        if (static::makeOBJ() -> join == ''){
+            if (static::makeOBJ() -> where == '') {
+                static::makeOBJ() -> where = ' WHERE '. $columnName . ' = ' . $columnValue;
             }else {
-                (static::makeOBJ()) -> where .= ' AND '. $columnName . ' = ' . $columnValue;
+                static::makeOBJ() -> where .= ' AND '. $columnName . ' = ' . $columnValue;
             }
         }else {
-            if ((static::makeOBJ()) -> on == '') {
-                (static::makeOBJ()) -> on = ' ON '. $columnName . ' = ' . $columnValue;
+            if (static::makeOBJ() -> on == '') {
+                static::makeOBJ() -> on = ' ON '. $columnName . ' = ' . $columnValue;
             }else {
-                (static::makeOBJ()) -> on .= ' AND '. $columnName . ' = ' . $columnValue;
+                static::makeOBJ() -> on .= ' AND '. $columnName . ' = ' . $columnValue;
             }
         }
-        return static::$OBJ;
+        return static::makeOBJ();
     }
     public static function limit(array $data){
         // var_dump($data);
@@ -245,8 +288,8 @@ class model extends mainDB{
 
             }
         }
-        (static::makeOBJ()) -> limit = ' LIMIT ' . $limit . ' , ' . $ofset;
-        return static::$OBJ;
+        static::makeOBJ() -> limit = ' LIMIT ' . $limit . ' , ' . $ofset;
+        return static::makeOBJ();
     }
 
 
@@ -260,9 +303,7 @@ class model extends mainDB{
 
 
 
-
-
-    public function get(array $fields = ['*']){
+    public function getSQL(array $fields = ['*']){
         if ($this -> base == '') { $this -> select($fields); }
         if ($this -> type == '') {
             if ($this -> from == '') { $this -> from(); } 
@@ -271,7 +312,13 @@ class model extends mainDB{
                 if ($this -> on == '') { $this -> where(); }
             }
         }
-        
+        if($this -> if != ''){
+            if ($this -> location == 'base') {
+                $this -> base .= ',' . $this -> if . ' ' . $this -> valueInELSEInCase ; 
+            } elseif ($this -> location == 'where') {
+                $this -> where .= ',' . $this -> if . ' ' . $this -> valueInELSEInCase ; 
+            }
+        }
         $base =     $this -> base;
         $from =     $this -> from;
         $join =     $this -> join;
@@ -279,17 +326,24 @@ class model extends mainDB{
         $where =    $this -> where;
         $limit =    $this -> limit;
         $sort =     $this -> sort;
+        $groupBy =  $this -> groupBy;
         $subQuery = static::$subQuery;
         
-        $this -> base = '';
-        $this -> from = '';
-        $this -> join = '';
-        $this -> on = '';
-        $this -> where = '';
-        $this -> limit = '';
-        $this -> sort = '';
-        static::$subQuery = '';
+        $this -> textQuery = $base . $subQuery . $from . $join . $sort . $on . $where . $limit . $groupBy;
+        
+        return static::makeOBJ();
+    }
 
-        return static::$returnedMysqlOBJ = $this -> sendQuery($base . $subQuery . $from . $join . $sort . $on . $where . $limit);
+    public function get(){
+        // $this -> base = '';
+        // $this -> from = '';
+        // $this -> join = '';
+        // $this -> on = '';
+        // $this -> where = '';
+        // $this -> limit = '';
+        // $this -> sort = '';
+        // static::$subQuery = '';
+        // var_dump($this -> textQuery);
+        return static::$returnedMysqlOBJ = $this -> sendQuery($this -> textQuery);
     }   
 }
