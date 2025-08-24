@@ -1,5 +1,9 @@
 <?php
-// $result = category::withProductCount() -> getSQL() -> get();
+
+// factory::factory('product') -> category();
+
+
+$result = category::withProductCount() -> getSQL() -> get();
 
 
 // $result = category::
@@ -28,7 +32,7 @@
 //     echo $value['title'];
 //     echo '<br>';
 //     echo 'description :      ';
-//     echo $value['description'];
+//     echo $value['category_description'];
 //     echo '<br>';
 //     echo 'point :      ';
 //     echo $value['point'];
@@ -36,16 +40,94 @@
 // }
 // -----------------------------------------------------------
 
-// $result = category::if();
+// $result = category::if(' point ' , '=' , " 0 " , 'امتیازی برای این دسته بندی ثبت نشده است' , 'point' , 'point')
+// ->  location('base') 
+// ->  withProductCount() 
+// ->  getSQL() 
+// ->  get();
+
+
+
+
+// foreach ($result as $value) {
+//     echo '<br>';
+//     echo '<br>'; 
+//     echo 'category_id :      ';
+//     echo $value['category_id'];
+//     echo '<br>';
+//     echo 'title :      ';
+//     echo $value['title'];
+//     echo '<br>';
+//     echo 'description :      ';
+//     echo $value['category_description'];
+//     echo '<br>';
+//     echo 'point :      ';
+//     echo $value['point'];
+//     echo '<br>';
+// }
+    
+// -----------------------------------------------------------
+    
+// $result = category::ifNull(' point ' , '=' , " 0 " , 'امتیازی برای این دسته بندی ثبت نشده است' , 'point')
+// ->  location('base') 
+// ->  withProductCount() 
+// ->  getSQL() 
+// ->  get();
+    
+
+// foreach ($result as $value) {
+//     echo '<br>';
+//     echo '<br>'; 
+//     echo 'category_id :      ';
+//     echo $value['category_id'];
+//     echo '<br>';
+//     echo 'title :      ';
+//     echo $value['title'];
+//     echo '<br>';
+//     echo 'description :      ';
+//     echo $value['category_description'];
+//     echo '<br>';
+//     echo 'point :      ';
+//     echo $value['point'];
+//     echo '<br>';
+// }
+
+// -----------------------------------------------------------
+
+
+// $result = category::coalesce(' point ')
+// ->  coalesceAlies('point')
+// ->  location('base') 
+// ->  withProductCount() 
+// ->  getSQL() 
+// ->  get();
+
+
+// foreach ($result as $value) {
+//     echo '<br>';
+//     echo '<br>'; 
+//     echo 'category_id :      ';
+//     echo $value['category_id'];
+//     echo '<br>';
+//     echo 'title :      ';
+//     echo $value['title'];
+//     echo '<br>';
+//     echo 'description :      ';
+//     echo $value['category_description'];
+//     echo '<br>';
+//     echo 'point :      ';
+//     echo $value['point'];
+//     echo '<br>';
+// }
+
+// -----------------------------------------------------------
 
 
 
 
 
 
-
-
-die();
+// die();
 
 $az = 0;
 $pageRows = 10;
@@ -210,7 +292,7 @@ $numRows = $result -> num_rows / 10;
             <select name='columnInQuestion' style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
                 <option value="category.category_id">id</option>
                 <option value="category.title">title</option>
-                <option value="category.description">description</option>
+                <option value="category_description">description</option>
             </select>
             <input name="textInQuestion" value="<?php if(!empty($value1)){ echo $value1; } ?>" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
             <button style="margin: 10px;padding: 5px;border-radius: 10px;border: none;background: none;">send</button>
@@ -228,7 +310,7 @@ $numRows = $result -> num_rows / 10;
                     <?= $value['title'] ?>
                 </div>
                 <div style="width: 300px;display: flex;justify-content: center;">
-                    <?= $value['description'] ?>
+                    <?= $value['category_description'] ?>
                 </div>
                 <div style="width: 300px;display: flex;justify-content: center;">
                     <?= $value['categoryProductCount'] ?>

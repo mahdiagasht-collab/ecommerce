@@ -8,6 +8,9 @@ class product extends model{
     protected static $requestQuery = '';
 
     public static function category(){
-        return (static::makeOBJ()) -> belongsTo('category');
+        
+        return factory::factory(static::class) -> belongsTo( ' INNER ' , ' category ');
+
+        // return (static::makeOBJ()) -> belongsTo( ' INNER ' , ' category ');
     }
 }

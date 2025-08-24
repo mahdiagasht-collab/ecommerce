@@ -1,5 +1,5 @@
 <?php
-$result = product::category() -> get();
+$result = product::category() -> getSQL() -> get();
 // die();
 $az = 0;
 $go = '';
@@ -18,7 +18,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     $arraysInUrl = explode(',', $GLOBALS['urlArray'][$i]);
     // pageInIt ------------------------------------------------------------------------
     if ($arraysInUrl[0] == 'pageInIt') {
-        $result = product::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> select() -> from() -> category() -> get();
+        $result = product::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> select() -> from() -> category() ->  getSQL() -> get();
 
         // $numRows = $arraysInUrl[2];
         if ($result -> num_rows < 10) {
@@ -64,7 +64,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         $pageInIt = 'serchPageInIt';
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
-            $result = product::limit($_POST) -> select() -> from() -> category() -> get();
+            $result = product::limit($_POST) -> select() -> from() -> category() ->  getSQL() -> get();
 
             $numRows = $result -> num_rows / 10;
             if ($result -> num_rows < 10) {
@@ -72,7 +72,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             }
         }else {
             // $result = product::limit([$arraysInUrl[1] + 0,$arraysInUrl[1] + 10]) -> category();
-            $result = product::limit([$arraysInUrl[1] + 0,$arraysInUrl[1] + 10]) -> select() -> from() -> category() -> get();
+            $result = product::limit([$arraysInUrl[1] + 0,$arraysInUrl[1] + 10]) -> select() -> from() -> category() ->  getSQL() -> get();
             $numRows = $arraysInUrl[2];
 
             if ($result -> num_rows < 10) {
@@ -92,7 +92,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             $columnInQuestion = $arraysInUrl[3];
             $sortingType = urldecode($arraysInUrl[4]);
 
-            $result = product::select() -> from(['product' , 'category']) -> where() -> where([ $arraysInUrl[3] , " '" . urldecode($arraysInUrl[4]) . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> get();
+            $result = product::select() -> from(['product' , 'category']) -> where() -> where([ $arraysInUrl[3] , " '" . urldecode($arraysInUrl[4]) . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) ->  getSQL() -> get();
 
             $numRows = $arraysInUrl[2];
 
@@ -101,7 +101,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             $columnInQuestion = $_POST['columnInQuestion'];
             $sortingType = $_POST['textInQuestion'];
 
-            $result = product::select() -> where() -> from(['product' , 'category']) -> where([ $columnInQuestion , " '" . $sortingType . "' "]) -> get();
+            $result = product::select() -> where() -> from(['product' , 'category']) -> where([ $columnInQuestion , " '" . $sortingType . "' "]) ->  getSQL() -> get();
 
             $numRows = $result -> num_rows / 10;
 
@@ -110,7 +110,28 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         if ($result -> num_rows < 10) { $pageRows = $result -> num_rows; }
 
     }
+    // groupBy =---------------------------------------------------------------------
+    if ($arraysInUrl[0] == 'groupBy') {
+
+        $pageInIt = 'groupBy';
+        $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
+        
+        if (!empty($_POST)) {
+            $columnInQuestion = $_POST['columnInQuestion'];
+            
+            // $result = product::groupBy($columnInQuestion) -> category() -> getSQL() -> get();
+            // echo '🤨🤨🤨😢';
+            $result = product::category() -> groupBy($columnInQuestion) ->getSQL() -> get();
+            
+            $numRows = $result -> num_rows / 10;
+
+            
+        }
+        
+        if ($result -> num_rows < 10) { $pageRows = $result -> num_rows; }
+    }
 }
+// echo '🤨🤨🤨😢';
 ?>
 
 
@@ -157,9 +178,22 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
                 <option value="product.name">name</option>
                 <option value="product.price">price</option>
                 <option value="category.title">category</option>
-                <option value="product.description">description</option>
+                <option value="product_description">description</option>
             </select>
             <input name="textInQuestion" placeholder="<?php if(!empty($value1)){ echo $value1; } ?>" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
+            <button style="margin: 10px;padding: 5px;border-radius: 10px;border: none;background: none;">send</button>
+        </form>
+        ----------------------------------------
+        <br>
+        <!-- groupBy -------------------------------------------------------- -->
+        <form action="http://localhost/ecommerce/listProduct/groupBy" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
+            <select name='columnInQuestion' style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
+                <option value="product.product_id">id</option>
+                <option value="product.name">name</option>
+                <option value="product.price">price</option>
+                <option value="product_category">category</option>
+                <option value="product_description">description</option>
+            </select>
             <button style="margin: 10px;padding: 5px;border-radius: 10px;border: none;background: none;">send</button>
         </form>
         <!-- ---------------------------------------- -->
@@ -181,7 +215,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
                     <?= $value['title'] ?>
                 </div>
                 <div style="width: 300px;display: flex;justify-content: center;">
-                    <?= $value['description'] ?>
+                    <?= $value['product_description'] ?>
                 </div>
                 <a href="http://localhost/ecommerce/singleProduct/<?= $value['product_id'] ?>" target="_blank">نمایش</a>
                 <a href="http://localhost/ecommerce/editeProduct/<?= $value['product_id'] ?>" target="_blank">ویرایش</a>
