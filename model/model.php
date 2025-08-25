@@ -17,6 +17,10 @@ class model extends mainDB{
     private $location = '';
 
     private $groupBy = '';
+    
+    private $having = '';
+
+
 
 
     private static function getReturnedOBJ(){
@@ -163,6 +167,8 @@ class model extends mainDB{
         $this -> where =     '';
         $this -> limit =     '';
 
+        $this -> having = $alies;
+
         return ' , ( ' . $base . $from . $where . $limit . ' ) ' . $alies;
     }
 
@@ -254,8 +260,14 @@ class model extends mainDB{
             $columnValue = $requiredValues[1];
         }
 
-
-
+        
+        if ($columnName == static::makeOBJ() -> having || $columnValue == static::makeOBJ() -> having) {
+            if (static::makeOBJ() -> where == ''){
+                static::makeOBJ() -> where = ' HAVING '. $columnName . ' = ' . $columnValue;
+            } else {
+                static::makeOBJ() -> where .= ' AND '. $columnName . ' = ' . $columnValue;
+            }
+        }
         if (static::makeOBJ() -> join == ''){
             if (static::makeOBJ() -> where == '') {
                 static::makeOBJ() -> where = ' WHERE '. $columnName . ' = ' . $columnValue;
