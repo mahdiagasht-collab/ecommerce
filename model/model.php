@@ -128,23 +128,26 @@ class model extends mainDB{
     
     
     
-    public static function with(){
+    public static function with(string $tableName , array $fields , array $whereRequest){ // مسئولیت این متد ایجاد ساب کوئری با سینتگز عمومی است
         (static::makeOBJ());
-        if (static::$table == 'category') { $tableName = 'product'; } elseif (static::$table == 'product') { $tableName = 'category'; }
-        static::$subQuery = $tableName::makeOBJ() -> getSQLWith('categoryProductCount');
+        static::$subQuery = $tableName::
+            select($fields)
+            // چرا سلکت رو اینجا کال کردم چون هر ساب کوئری ای دستورش باید یک فیلدز را برگرداند نه بیشتر از یکی رو
+        ->  where($whereRequest)
+            // چرا اینجا من وئر رو کال کردم چون همواره ساب کوئری یک مقدار میتواند برگرداند نه چند مقدار
+        ->  getSQLWith('categoryProductCount');
+            // چرا من گئت اسکیواِل رو کال کردم چون در اونجا پراپرتی های این آبجکت رو به هم کانکت میکنه و برمیگردونه
         return static::makeOBJ();
     }
     
     
     
-    public static function withProductCount(){
+    public static function withProductCount(string $tableName){
         (static::makeOBJ());
-        if (static::$table == 'category') {
-            $tableName = 'product';
-        } elseif (static::$table == 'product') {
-            $tableName = 'category';
-        }
-        static::$subQuery = $tableName::select(['count(*) ']) -> where(static::$related) -> getSQLWith('categoryProductCount');
+        static::$subQuery = $tableName::
+            select(['count(*) ']) 
+        ->  where(static::$related) 
+        ->  getSQLWith('categoryProductCount');
         // return static::makeOBJ() -> get();
         return static::makeOBJ();
     }
@@ -347,15 +350,6 @@ class model extends mainDB{
     }
 
     public function get(){
-        // $this -> base = '';
-        // $this -> from = '';
-        // $this -> join = '';
-        // $this -> on = '';
-        // $this -> where = '';
-        // $this -> limit = '';
-        // $this -> sort = '';
-        // static::$subQuery = '';
-        // var_dump($this -> textQuery);
         return static::$returnedMysqlOBJ = $this -> sendQuery($this -> textQuery);
     }   
 }
