@@ -248,19 +248,19 @@ $numRows = $result -> num_rows / 10;
         
         if (empty($_POST)) {
             
-            // $columnInQuestion = $arraysInUrl[3];
-            // $sortingType = urldecode($arraysInUrl[4]);
+            $columnInQuestion = $arraysInUrl[3];
             
             // $result = category::where( [$columnInQuestion , " '" . $sortingType . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> withProductCount('product') -> getSQL() -> get();
             
+            $result = category::withProductCount('product') -> having($columnInQuestion) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> getSQL() -> get();
             
-            // $az = $arraysInUrl[1] + 0;
-            // echo $numRows = $arraysInUrl[2];
+            $az = $arraysInUrl[1] + 0;
+            echo $numRows = $arraysInUrl[2];
         }else {
             
-            $textRequestion = $_POST['havingAndNotHaving'];
+            $columnInQuestion = $_POST['textRequestion'];
             
-            $result = category::having($textRequestion) -> withProductCount('product') -> getSQL() -> get();
+            $result = category::withProductCount('product') -> having($columnInQuestion) -> getSQL() -> get();
 
             echo $numRows = $result -> num_rows / 10;
             
@@ -334,9 +334,9 @@ $numRows = $result -> num_rows / 10;
         <br>
         <!-- havingAndNotHaving -------------------------------------------------------- -->
         <form action="http://localhost/ecommerce/listCategory/havingAndNotHaving" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
-            <select name='typeCoestion' style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
-                <option value="having">having</option>
-                <option value="notHaving">notHaving</option>
+            <select name='textRequestion' style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
+                <option value="having"      <?php if ($columnInQuestion == 'having')    { echo 'selected'; } ?>>having</option>
+                <option value="notHaving"   <?php if ($columnInQuestion == 'notHaving') { echo 'selected'; } ?>>notHaving</option>
             </select>
             <button style="margin: 10px;padding: 5px;border-radius: 10px;border: none;background: none;">send</button>
         </form>
