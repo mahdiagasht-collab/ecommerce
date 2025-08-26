@@ -217,7 +217,7 @@ function clientCode(){
 ?>
 <!-- limitOfset serch -------------------------------------------------------- -->
 <!-- <div style="display: flex;justify-content: center;align-items: center;">
-    <form action="http://localhost/ecommerce/test2/serchPageInIt" method="post">
+    <form action="http://localhost/ecommerceBuilderAndFacade/test2/serchPageInIt" method="post">
         <input name="0" placeholder="<?php /*if(!empty($value1)){ echo $value1; }*/ ?>">
         <input name="1" placeholder="<?php /*if(!empty($value2)){ echo $value2; } */?>">
         <button>send</button>
@@ -230,7 +230,7 @@ function clientCode(){
     if ($go == '1') {
         for ($i=0; $i < $numRows; $i++) { 
             ?>
-            <a href="http://localhost/ecommerce/test2/serchPageInIt,<?= $value1 ?>,<?= $value2 ?>,<?= $i ?>,<?= $numRows ?>" style="background-color: bisque;margin: 10px;padding: 10px;border-radius: 10px;text-decoration: none;"><?= $i + 1 ?></a>
+            <a href="http://localhost/ecommerceBuilderAndFacade/test2/serchPageInIt,<?= $value1 ?>,<?= $value2 ?>,<?= $i ?>,<?= $numRows ?>" style="background-color: bisque;margin: 10px;padding: 10px;border-radius: 10px;text-decoration: none;"><?= $i + 1 ?></a>
             <?php
 
         }
@@ -257,9 +257,9 @@ function clientCode(){
             <div style="width: 300px;display: flex;justify-content: center;">
                 <?= $value['description'] ?>
             </div>
-            <a href="http://localhost/ecommerce/singleProduct/<?= $value['id'] ?>">نمایش</a>
-            <a href="http://localhost/ecommerce/editeProduct/<?= $value['id'] ?>">ویرایش</a>
-            <a href="http://localhost/ecommerce/deleteProduct/<?= $value['id'] ?>">حذف</a>
+            <a href="http://localhost/ecommerceBuilderAndFacade/singleProduct/<?= $value['id'] ?>">نمایش</a>
+            <a href="http://localhost/ecommerceBuilderAndFacade/editeProduct/<?= $value['id'] ?>">ویرایش</a>
+            <a href="http://localhost/ecommerceBuilderAndFacade/deleteProduct/<?= $value['id'] ?>">حذف</a>
         </div>
     <?php } ?>
 </div>
@@ -270,7 +270,7 @@ function clientCode(){
     <?php /*
         for ($i=0; $i < $numRows; $i++) { 
             ?>
-            <a href="http://localhost/ecommerce/test2/pageInItPrice,<?= $i . 0 ?>,<?= $numRows ?>" style="background-color: bisque;margin: 10px;padding: 10px;border-radius: 10px;text-decoration: none;"><?= $i + 1 ?></a>
+            <a href="http://localhost/ecommerceBuilderAndFacade/test2/pageInItPrice,<?= $i . 0 ?>,<?= $numRows ?>" style="background-color: bisque;margin: 10px;padding: 10px;border-radius: 10px;text-decoration: none;"><?= $i + 1 ?></a>
             <?php
 
         } */

@@ -134,7 +134,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     if ($go == '1') {
         for ($i=0; $i < $numRows; $i++) { 
             ?>
-            <a href="http://localhost/ecommerce/test/serchPageInIt,<?= $value1 ?>,<?= $value2 ?>,<?= $i ?>,<?= $numRows ?>" style="background-color: bisque;margin: 10px;padding: 10px;border-radius: 10px;text-decoration: none;"><?= $i + 1 ?></a>
+            <a href="http://localhost/ecommerceBuilderAndFacade/test/serchPageInIt,<?= $value1 ?>,<?= $value2 ?>,<?= $i ?>,<?= $numRows ?>" style="background-color: bisque;margin: 10px;padding: 10px;border-radius: 10px;text-decoration: none;"><?= $i + 1 ?></a>
             <?php 
         }
     }
@@ -143,7 +143,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
 <div style = "display: flex;flex-direction: row-reverse;justify-content: center;width: 100%;">
     <!-- pageInItPrice ---------------------------------------------------------- -->
     <div style="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: column;align-items: center;width: 20%;">
-        <form action="http://localhost/ecommerce/test/pageInItPrice" method = "post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
+        <form action="http://localhost/ecommerceBuilderAndFacade/test/pageInItPrice" method = "post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <select name="columnInQuestion" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
                 <option value="id">id</option>
             </select>
@@ -156,7 +156,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         ----------------------------------------
         <br>
         <!-- limitOfset serch -------------------------------------------------------- -->
-        <form action="http://localhost/ecommerce/test/serchPageInIt" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
+        <form action="http://localhost/ecommerceBuilderAndFacade/test/serchPageInIt" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <input name="0" value ="<?php if(!empty($value1)){ echo $value1; } ?>" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
             <input name="1" value ="<?php if(!empty($value2)){ echo $value2; } ?>" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
             <button style="margin: 10px;padding: 5px;border-radius: 10px;border: none;background: none;">send</button>
@@ -164,7 +164,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         ----------------------------------------
         <br>
         <!-- searchByColumns -------------------------------------------------------- -->
-        <form action="http://localhost/ecommerce/test/searchByColumns" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
+        <form action="http://localhost/ecommerceBuilderAndFacade/test/searchByColumns" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <select name='columnInQuestion' style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
                 <option value="category.id">id</option>
                 <option value="category.title">title</option>
@@ -192,9 +192,9 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
                     <?php /* product::where($value['id'] , 'product.category') -> count(); */ ?>
                     <?= $value['categoryProductCount'] ?>
                 </div>
-                <a href="http://localhost/ecommerce/singleCategory/<?= $value['id'] ?>">نمایش</a>
-                <a href="http://localhost/ecommerce/editeCategory/<?= $value['id'] ?>">ویرایش</a>
-                <a href="http://localhost/ecommerce/deleteCategory/<?= $value['id'] ?>">حذف</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/singleCategory/<?= $value['id'] ?>">نمایش</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/editeCategory/<?= $value['id'] ?>">ویرایش</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/deleteCategory/<?= $value['id'] ?>">حذف</a>
             </div>
         <?php } ?>
     </div>

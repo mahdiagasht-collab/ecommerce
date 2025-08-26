@@ -138,7 +138,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
 <div style = "display: flex;flex-direction: row-reverse;justify-content: center;width: 100%;">
     <!-- pageInItPrice ---------------------------------------------------------- -->
     <div style="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: column;align-items: center;width: 20%;">
-        <form action="http://localhost/ecommerce/listUser/pageInItPrice" method = "post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
+        <form action="http://localhost/ecommerceBuilderAndFacade/listUser/pageInItPrice" method = "post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <select name="columnInQuestion" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
                 <option value="id">id</option>
             </select>
@@ -151,7 +151,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         ----------------------------------------
         <br>
         <!-- limitOfset serch -------------------------------------------------------- -->
-        <form action="http://localhost/ecommerce/listUser/serchPageInIt" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
+        <form action="http://localhost/ecommerceBuilderAndFacade/listUser/serchPageInIt" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <input name="0" value ="<?php if(!empty($value1)){ echo $value1; } ?>" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
             <input name="1" value ="<?php if(!empty($value2)){ echo $value2; } ?>" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
             <button style="margin: 10px;padding: 5px;border-radius: 10px;border: none;background: none;">send</button>
@@ -159,7 +159,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         ----------------------------------------
         <br>
         <!-- searchByColumns -------------------------------------------------------- -->
-        <form action="http://localhost/ecommerce/listUser/searchByColumns" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
+        <form action="http://localhost/ecommerceBuilderAndFacade/listUser/searchByColumns" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <select name='columnInQuestion' style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
                 <option value="user.id">id</option>
                 <option value="user.name">name</option>
@@ -186,9 +186,9 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
                 <div style="width: 300px;display: flex;justify-content: center;">
                     <?= $value['phonNumber'] ?>
                 </div>
-                <a href="http://localhost/ecommerce/singleUser/<?= $value['id'] ?>">نمایش</a>
-                <a href="http://localhost/ecommerce/editeUser/<?= $value['id'] ?>">ویرایش</a>
-                <a href="http://localhost/ecommerce/deleteUser/<?= $value['id'] ?>">حذف</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/singleUser/<?= $value['id'] ?>">نمایش</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/editeUser/<?= $value['id'] ?>">ویرایش</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/deleteUser/<?= $value['id'] ?>">حذف</a>
             </div>
         <?php } ?>
     </div>
@@ -199,7 +199,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     <?php
         for ($i=0; $i < $numRows; $i++) { 
             ?>
-            <a href="http://localhost/ecommerce/listUser/<?= $pageInIt ?>,<?= $i . 0 ?>,<?= $numRows ?>,<?= $columnInQuestion ?>,<?= $sortingType ?>" style="background-color: bisque;margin: 10px;padding: 10px;border-radius: 10px;text-decoration: none;"><?= $i + 1 ?></a>
+            <a href="http://localhost/ecommerceBuilderAndFacade/listUser/<?= $pageInIt ?>,<?= $i . 0 ?>,<?= $numRows ?>,<?= $columnInQuestion ?>,<?= $sortingType ?>" style="background-color: bisque;margin: 10px;padding: 10px;border-radius: 10px;text-decoration: none;"><?= $i + 1 ?></a>
             <?php
 
         }
