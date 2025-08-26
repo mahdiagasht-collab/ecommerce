@@ -19,7 +19,8 @@ class model extends mainDB{
     private $groupBy = '';
     
     private $having = '';
-
+    
+    private $withAlies = '';
 
 
 
@@ -129,7 +130,8 @@ class model extends mainDB{
     
     
     public static function with(string $tableName , array $fields , array $whereRequest){ // مسئولیت این متد ایجاد ساب کوئری با سینتگز عمومی است
-        (static::makeOBJ());
+        (static::makeOBJ()) -> withAlies = 'categoryProductCount';
+        // این پراپرتی رو برای متد هَوینگ نوشتم
         static::$subQuery = $tableName::
             select($fields)
             // چرا سلکت رو اینجا کال کردم چون هر ساب کوئری ای دستورش باید یک فیلدز را برگرداند نه بیشتر از یکی رو
@@ -143,7 +145,7 @@ class model extends mainDB{
     
     
     public static function withProductCount(string $tableName){
-        (static::makeOBJ());
+        (static::makeOBJ()) -> withAlies = 'categoryProductCount';
         static::$subQuery = $tableName::
             select(['count(*) ']) 
         ->  where(static::$related) 
@@ -243,7 +245,15 @@ class model extends mainDB{
         return static::makeOBJ();
     }
 
-
+    public static function having(string $textQuestion){
+        var_dump(static::makeOBJ() -> withAlies);
+        if ($textQuestion == 'having') {
+            static::makeOBJ() -> having = ' HAVING ' . static::makeOBJ() -> withAlies . ' > ' . '0';
+        } elseif ($textQuestion == 'notHaving') {
+            static::makeOBJ() -> having = ' HAVING ' . static::makeOBJ() -> withAlies . ' = ' . '0';
+        }
+        return static::makeOBJ();
+    }
 
 
 
@@ -342,9 +352,10 @@ class model extends mainDB{
         $limit =    $this -> limit;
         $sort =     $this -> sort;
         $groupBy =  $this -> groupBy;
+        $having =   $this -> having;
         $subQuery = static::$subQuery;
         
-        $this -> textQuery = $base . $subQuery . $from . $join . $sort . $on . $where . $limit . $groupBy;
+        $this -> textQuery = $base . $subQuery . $from . $join . $sort . $on . $where . $having . $limit . $groupBy;
         
         return static::makeOBJ();
     }
