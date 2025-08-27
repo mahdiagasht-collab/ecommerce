@@ -1,5 +1,7 @@
 <?php
 
+// echo implode('<br>' , category::frist());
+
 // factory::factory('product') -> category();
 
 
