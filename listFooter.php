@@ -18,8 +18,8 @@ $result = footer::all();
             <div style="width: 100px;display: flex;justify-content: center;">
                 <?= $value['nameDesigner'] ?>
             </div>
-            <a href="http://localhost/ecommerce/editeFooter/<?= $value['id'] ?>">ویرایش</a>
-            <a href="http://localhost/ecommerce/deleteFooter/<?= $value['id'] ?>">حذف</a>
+            <a href="http://localhost/ecommerceBuilderAndFacade/editeFooter/<?= $value['id'] ?>">ویرایش</a>
+            <a href="http://localhost/ecommerceBuilderAndFacade/deleteFooter/<?= $value['id'] ?>">حذف</a>
         </div>
     <?php
     }

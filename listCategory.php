@@ -1,11 +1,5 @@
 <?php
-
-// echo implode('<br>' , category::frist());
-
-// factory::factory('product') -> category();
-
-
-$result = category::withProductCount('product') -> getSQL() -> get();
+$result = category::withProductCount('product') -> get();
 
 
 // $result = category::
@@ -18,7 +12,6 @@ $result = category::withProductCount('product') -> getSQL() -> get();
 // ->  caseELSEAndENDAndAlies('point' , 'point') 
 // ->  location('base') 
 // ->  withProductCount('product') 
-// ->  getSQL() 
 // ->  get();
 
 
@@ -45,7 +38,6 @@ $result = category::withProductCount('product') -> getSQL() -> get();
 // $result = category::if(' point ' , '=' , " 0 " , 'امتیازی برای این دسته بندی ثبت نشده است' , 'point' , 'point')
 // ->  location('base') 
 // ->  withProductCount('product') 
-// ->  getSQL() 
 // ->  get();
 
 
@@ -73,7 +65,6 @@ $result = category::withProductCount('product') -> getSQL() -> get();
 // $result = category::ifNull(' point ' , '=' , " 0 " , 'امتیازی برای این دسته بندی ثبت نشده است' , 'point')
 // ->  location('base') 
 // ->  withProductCount('product') 
-// ->  getSQL() 
 // ->  get();
     
 
@@ -101,7 +92,6 @@ $result = category::withProductCount('product') -> getSQL() -> get();
 // ->  coalesceAlies('point')
 // ->  location('base') 
 // ->  withProductCount('product') 
-// ->  getSQL() 
 // ->  get();
 
 
@@ -145,11 +135,11 @@ if ($result -> num_rows < 10) {
 }
 $numRows = $result -> num_rows / 10;
 
-    for ($i=3; $i < count($GLOBALS['urlArray']); $i++) { 
-        $arraysInUrl = explode(',', $GLOBALS['urlArray'][$i]);
-        // pageInIt ------------------------------------------------------------------------
-        if ($arraysInUrl[0] == 'pageInIt') {
-        $result = category::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> select() -> from(['category']) -> withProductCount('product') -> getSQL() -> get();
+for ($i=3; $i < count($GLOBALS['urlArray']); $i++) { 
+    $arraysInUrl = explode(',', $GLOBALS['urlArray'][$i]);
+    // pageInIt ------------------------------------------------------------------------
+    if ($arraysInUrl[0] == 'pageInIt') {
+        $result = category::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> select() -> from(['category']) -> withProductCount('product') -> get();
         if ($result -> num_rows < 10) {
             $pageRows = $result -> num_rows;
         }
@@ -161,7 +151,7 @@ $numRows = $result -> num_rows / 10;
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
             
-            $result = category::sort($_POST) -> withProductCount('product') -> getSQL() -> get();
+            $result = category::sort($_POST) -> withProductCount('product') -> get();
             
             $columnInQuestion = $_POST['columnInQuestion'];
             $sortingType = $_POST['sortingType'];
@@ -171,7 +161,7 @@ $numRows = $result -> num_rows / 10;
             $columnInQuestion = $arraysInUrl[3];
             $sortingType = $arraysInUrl[4];
             $data = ['columnInQuestion' => $columnInQuestion , 'sortingType' => $sortingType];
-            $result = category::sort($data) -> withProductCount('product') -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> getSQL() -> get();
+            $result = category::sort($data) -> withProductCount('product') -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> get();
             $az = $arraysInUrl[1] + 0;
             echo $numRows = $arraysInUrl[2];
             if ($result -> num_rows < 10) {
@@ -183,9 +173,10 @@ $numRows = $result -> num_rows / 10;
     }
     // serchPageInIt ------------------------------------------------------------------------
     if ($arraysInUrl[0] == 'serchPageInIt') {
+        $pageInIt = 'serchPageInIt';
         $restrictionsAppliedBar[$i - 3] = $arraysInUrl[0];
         if (!empty($_POST)) {
-            $result = category::limit($_POST) -> withProductCount('product') -> getSQL() -> get();
+            $result = category::limit($_POST) -> withProductCount('product') -> get();
 
             $value1 = $_POST[0];
             $value2 = $_POST[1];
@@ -195,7 +186,7 @@ $numRows = $result -> num_rows / 10;
                 $pageRows = $result -> num_rows;
             }
         }else {
-            $result = category::limit([$arraysInUrl[1] + ($arraysInUrl[3] . 0),$arraysInUrl[2]]) -> withProductCount('product') -> getSQL() -> get();
+            $result = category::limit([$arraysInUrl[1] + ($arraysInUrl[3] . 0),$arraysInUrl[2]]) -> withProductCount('product') -> get();
             echo '😤';
             
             $value1 = $arraysInUrl[1];
@@ -219,7 +210,7 @@ $numRows = $result -> num_rows / 10;
             $columnInQuestion = $arraysInUrl[3];
             $sortingType = urldecode($arraysInUrl[4]);
             
-            $result = category::where( [$columnInQuestion , " '" . $sortingType . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> withProductCount('product') -> getSQL() -> get();
+            $result = category::where( [$columnInQuestion , " '" . $sortingType . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> withProductCount('product') -> get();
             
             
             $az = $arraysInUrl[1] + 0;
@@ -229,7 +220,7 @@ $numRows = $result -> num_rows / 10;
             $columnInQuestion = $_POST['columnInQuestion'];
             $sortingType = urldecode($_POST['textInQuestion']);
             
-            $result = category::where([$columnInQuestion , " '" . $sortingType . "' "]) -> withProductCount('product') -> getSQL() -> get();
+            $result = category::where([$columnInQuestion , " '" . $sortingType . "' "]) -> withProductCount('product') -> get();
 
             echo $numRows = $result -> num_rows / 10;
             
@@ -252,9 +243,9 @@ $numRows = $result -> num_rows / 10;
             
             $columnInQuestion = $arraysInUrl[3];
             
-            // $result = category::where( [$columnInQuestion , " '" . $sortingType . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> withProductCount('product') -> getSQL() -> get();
+            // $result = category::where( [$columnInQuestion , " '" . $sortingType . "' "]) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> withProductCount('product') -> get();
             
-            $result = category::withProductCount('product') -> having($columnInQuestion) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> getSQL() -> get();
+            $result = category::withProductCount('product') -> formHaving($columnInQuestion) -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> get();
             
             $az = $arraysInUrl[1] + 0;
             echo $numRows = $arraysInUrl[2];
@@ -262,7 +253,7 @@ $numRows = $result -> num_rows / 10;
             
             $columnInQuestion = $_POST['textRequestion'];
             
-            $result = category::withProductCount('product') -> having($columnInQuestion) -> getSQL() -> get();
+            $result = category::withProductCount('product') -> formHaving($columnInQuestion) -> get();
 
             echo $numRows = $result -> num_rows / 10;
             
@@ -293,7 +284,7 @@ $numRows = $result -> num_rows / 10;
     <div style="background-color: bisque;margin: 10px;border-radius: 10px;display: flex;flex-direction: column;align-items: flex-start;width: 97%;">
         <?php for ($i=0; $i < count($restrictionsAppliedBar); $i++) { ?>
             <div style="background-color: azure;margin: 10px;padding: 10px;border-radius: 10px;display: flex;justify-content: space-around;">
-                <a href="http://localhost/ecommerce/listCategory" style="text-decoration: none;" title="حذف این سرویس">✗</a><?= '&nbsp' . $restrictionsAppliedBar[$i] . ' &nbsp ✓ '?> 
+                <a href="http://localhost/ecommerceBuilderAndFacade/listCategory" style="text-decoration: none;" title="حذف این سرویس">✗</a><?= '&nbsp' . $restrictionsAppliedBar[$i] . ' &nbsp ✓ '?> 
             </div>
         <?php } ?>
     </div>
@@ -302,7 +293,7 @@ $numRows = $result -> num_rows / 10;
 <div style = "display: flex;flex-direction: row-reverse;justify-content: center;width: 100%;">
     <!-- sort ---------------------------------------------------------- -->
     <div style="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: column;align-items: center;width: 20%;">
-        <form action="http://localhost/ecommerce/listCategory/sort" method = "post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
+        <form action="http://localhost/ecommerceBuilderAndFacade/listCategory/sort" method = "post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <select name="columnInQuestion" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
                 <option value="category_id">id</option>
             </select>
@@ -315,7 +306,7 @@ $numRows = $result -> num_rows / 10;
         ----------------------------------------
         <br>
         <!-- limitOfset serch -------------------------------------------------------- -->
-        <form action="http://localhost/ecommerce/listCategory/serchPageInIt" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
+        <form action="http://localhost/ecommerceBuilderAndFacade/listCategory/serchPageInIt" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <input name="0" value ="<?php if(!empty($value1)){ echo $value1; } ?>" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
             <input name="1" value ="<?php if(!empty($value2)){ echo $value2; } ?>" style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
             <button style="margin: 10px;padding: 5px;border-radius: 10px;border: none;background: none;">send</button>
@@ -323,7 +314,7 @@ $numRows = $result -> num_rows / 10;
         ----------------------------------------
         <br>
         <!-- searchByColumns -------------------------------------------------------- -->
-        <form action="http://localhost/ecommerce/listCategory/searchByColumns" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
+        <form action="http://localhost/ecommerceBuilderAndFacade/listCategory/searchByColumns" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <select name='columnInQuestion' style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
                 <option value="category.category_id">id</option>
                 <option value="category.title">title</option>
@@ -335,7 +326,7 @@ $numRows = $result -> num_rows / 10;
         ----------------------------------------
         <br>
         <!-- havingAndNotHaving -------------------------------------------------------- -->
-        <form action="http://localhost/ecommerce/listCategory/havingAndNotHaving" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
+        <form action="http://localhost/ecommerceBuilderAndFacade/listCategory/havingAndNotHaving" method="post" style ="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: row-reverse;align-items: center;width: 100%;">
             <select name='textRequestion' style="margin: 10px;padding: 5px;border-radius: 10px;border: none;text-align: center;width: 90%;">
                 <option value="having"      <?php if ($columnInQuestion == 'having')    { echo 'selected'; } ?>>having</option>
                 <option value="notHaving"   <?php if ($columnInQuestion == 'notHaving') { echo 'selected'; } ?>>notHaving</option>
@@ -360,9 +351,9 @@ $numRows = $result -> num_rows / 10;
                 <div style="width: 300px;display: flex;justify-content: center;">
                     <?= $value['categoryProductCount'] ?>
                 </div>
-                <a href="http://localhost/ecommerce/singleCategory/<?= $value['category_id'] ?>" target="_blank">نمایش</a>
-                <a href="http://localhost/ecommerce/editeCategory/<?= $value['category_id'] ?>" target="_blank">ویرایش</a>
-                <a href="http://localhost/ecommerce/deleteCategory/<?= $value['category_id'] ?>" target="_blank">حذف</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/singleCategory/<?= $value['category_id'] ?>" target="_blank">نمایش</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/editeCategory/<?= $value['category_id'] ?>" target="_blank">ویرایش</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/deleteCategory/<?= $value['category_id'] ?>" target="_blank">حذف</a>
             </div>
         <?php } ?>
     </div>
@@ -373,7 +364,7 @@ $numRows = $result -> num_rows / 10;
     <?php
         for ($i=0; $i < $numRows; $i++) { 
             ?>
-            <a href="http://localhost/ecommerce/listCategory/<?= $pageInIt ?>,<?= $i . 0 ?>,<?= $numRows ?>,<?= $columnInQuestion ?>,<?= $sortingType ?>" style="background-color: bisque;margin: 10px;padding: 10px;border-radius: 10px;text-decoration: none;"><?= $i + 1 ?></a>
+            <a href="http://localhost/ecommerceBuilderAndFacade/listCategory/<?= $pageInIt ?>,<?= $i . 0 ?>,<?= $numRows ?>,<?= $columnInQuestion ?>,<?= $sortingType ?>" style="background-color: bisque;margin: 10px;padding: 10px;border-radius: 10px;text-decoration: none;"><?= $i + 1 ?></a>
             <?php
 
         }
