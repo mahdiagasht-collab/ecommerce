@@ -249,7 +249,7 @@ class model extends facade{
         }
 
 
-        if ($this -> on) {
+        if (!$this -> on) {
             $this -> on = ' ON '. $columnName . ' = ' . $columnValue;
         }else {
             $this -> on .= ' AND '. $columnName . ' = ' . $columnValue;
@@ -376,6 +376,13 @@ class model extends facade{
 
     protected function get(array $colomnInQuestion){
         $this -> getSQL();
-        return $this -> returnedMysqlOBJ = $this -> sendQuery($this -> textQuery);
-    }   
+        // $this -> returnedMysqlOBJ = $this -> sendQuery($this -> textQuery);
+        return $this -> fetchAssoc($this -> sendQuery($this -> textQuery));
+
+    }
+    protected function fetchAssoc(mysqli_result $obj):array {
+        $num = 0;
+        foreach ($obj as $value) { $rowsArray[$num] = $value; $num += 1; }
+        return $rowsArray;
+    }
 }

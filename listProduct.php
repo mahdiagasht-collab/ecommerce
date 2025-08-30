@@ -6,10 +6,10 @@ $go = '';
 $pageRows = 10;
 $ofset = 0;
 $limit = 10;
-if ($result -> num_rows < 10) {
-    $pageRows = $result -> num_rows;
+if (count($result) < 10) {
+    $pageRows = count($result);
 }
-$numRows = $result -> num_rows / 10;
+$numRows = count($result) / 10;
 $pageInIt = 'pageInIt';
 $columnInQuestion = '';
 $sortingType = '';
@@ -21,8 +21,8 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         $result = product::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> category() -> get();
 
         // $numRows = $arraysInUrl[2];
-        if ($result -> num_rows < 10) {
-            $pageRows = $result -> num_rows;
+        if (count($result) < 10) {
+            $pageRows = count($result);
         }
     }
     // sort ----------------------------------------------------------------------
@@ -56,7 +56,7 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             }
         }
 
-        $ta = $result -> num_rows;
+        $ta = count($result);
 
     }
     // serchPageInIt =---------------------------------------------------------------------
@@ -66,17 +66,17 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
         if (!empty($_POST)) {
             $result = product::limit($_POST) -> category() -> get();
 
-            $numRows = $result -> num_rows / 10;
-            if ($result -> num_rows < 10) {
-                $pageRows = $result -> num_rows;
+            $numRows = count($result) / 10;
+            if (count($result) < 10) {
+                $pageRows = count($result);
             }
         }else {
             // $result = product::limit([$arraysInUrl[1] + 0,$arraysInUrl[1] + 10]) -> category();
             $result = product::limit([$arraysInUrl[1] + 0,$arraysInUrl[1] + 10]) -> category() -> get();
             $numRows = $arraysInUrl[2];
 
-            if ($result -> num_rows < 10) {
-                $pageRows = $result -> num_rows;
+            if (count($result) < 10) {
+                $pageRows = count($result);
             }
         }
         $go = '1';
@@ -103,11 +103,11 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
 
             $result = product::from(['product' , 'category']) -> where([ $columnInQuestion , " '" . $sortingType . "' "]) -> get();
 
-            $numRows = $result -> num_rows / 10;
+            $numRows = count($result) / 10;
 
         }
 
-        if ($result -> num_rows < 10) { $pageRows = $result -> num_rows; }
+        if (count($result) < 10) { $pageRows = count($result); }
 
     }
     // groupBy =---------------------------------------------------------------------
@@ -123,12 +123,12 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             // echo '🤨🤨🤨😢';
             $result = product::category() -> groupBy($columnInQuestion) -> get();
             
-            $numRows = $result -> num_rows / 10;
+            $numRows = count($result) / 10;
 
             
         }
         
-        if ($result -> num_rows < 10) { $pageRows = $result -> num_rows; }
+        if (count($result) < 10) { $pageRows = count($result); }
     }
 }
 // echo '🤨🤨🤨😢';
@@ -200,26 +200,27 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     </div>
     <div style="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: column;align-items: center;width: 80%;">
         <?php 
-        for ($i=$az; $i < $pageRows ; $i++) {$value = $result -> fetch_assoc(); ?>
+        for ($i=$az; $i < $pageRows ; $i++) {
+            // $value = $result -> fetch_assoc(); ?>
             <div style="background-color: azure;margin: 10px;padding: 10px;border-radius: 10px;width: 96%;display: flex;justify-content: space-around;align-items: center;">
                 <div>
-                    <?= $value['product_id'] ?>
+                    <?= $result[$i]['product_id'] ?>
                 </div>
                 <div style="width: 200px;display: flex;justify-content: center;">
-                    <?= $value['name'] ?>
+                    <?= $result[$i]['name'] ?>
                 </div>
                 <div style="width: 100px;display: flex;justify-content: center;">
-                    <?= $value['price'] ?>
+                    <?= $result[$i]['price'] ?>
                 </div>
                 <div style="width: 100px;display: flex;justify-content: center;">
-                    <?= $value['title'] ?>
+                    <?= $result[$i]['title'] ?>
                 </div>
                 <div style="width: 300px;display: flex;justify-content: center;">
-                    <?= $value['product_description'] ?>
+                    <?= $result[$i]['product_description'] ?>
                 </div>
-                <a href="http://localhost/ecommerceBuilderAndFacade/singleProduct/<?= $value['product_id'] ?>" target="_blank">نمایش</a>
-                <a href="http://localhost/ecommerceBuilderAndFacade/editeProduct/<?= $value['product_id'] ?>" target="_blank">ویرایش</a>
-                <a href="http://localhost/ecommerceBuilderAndFacade/deleteProduct/<?= $value['product_id'] ?>" target="_blank">حذف</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/singleProduct/<?= $result[$i]['product_id'] ?>" target="_blank">نمایش</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/editeProduct/<?= $result[$i]['product_id'] ?>" target="_blank">ویرایش</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/deleteProduct/<?= $result[$i]['product_id'] ?>" target="_blank">حذف</a>
             </div>
         <?php } ?>
         

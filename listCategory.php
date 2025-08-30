@@ -130,18 +130,18 @@ $columnInQuestion = '';
 $sortingType = '';
 
 
-if ($result -> num_rows < 10) {
-    $pageRows = $result -> num_rows;
+if (count($result) < 10) {
+    $pageRows = count($result);
 }
-$numRows = $result -> num_rows / 10;
+$numRows = count($result) / 10;
 
 for ($i=3; $i < count($GLOBALS['urlArray']); $i++) { 
     $arraysInUrl = explode(',', $GLOBALS['urlArray'][$i]);
     // pageInIt ------------------------------------------------------------------------
     if ($arraysInUrl[0] == 'pageInIt') {
         $result = category::limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> select() -> from(['category']) -> withProductCount('product') -> get();
-        if ($result -> num_rows < 10) {
-            $pageRows = $result -> num_rows;
+        if (count($result) < 10) {
+            $pageRows = count($result);
         }
     }
     // sort ----------------------------------------------------------------------
@@ -164,8 +164,8 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             $result = category::sort($data) -> withProductCount('product') -> limit([ 0 + $arraysInUrl[1] , 10 + $arraysInUrl[1] ]) -> get();
             $az = $arraysInUrl[1] + 0;
             echo $numRows = $arraysInUrl[2];
-            if ($result -> num_rows < 10) {
-                $pageRows = $result -> num_rows + $az;
+            if (count($result) < 10) {
+                $pageRows = count($result) + $az;
             }else {
                 $pageRows = $az + 10;
             }
@@ -181,9 +181,9 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             $value1 = $_POST[0];
             $value2 = $_POST[1];
             echo '😤';
-            $numRows = $result -> num_rows / 10;
-            if ($result -> num_rows < 10) {
-                $pageRows = $result -> num_rows;
+            $numRows = count($result) / 10;
+            if (count($result) < 10) {
+                $pageRows = count($result);
             }
         }else {
             $result = category::limit([$arraysInUrl[1] + ($arraysInUrl[3] . 0),$arraysInUrl[2]]) -> withProductCount('product') -> get();
@@ -194,8 +194,8 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             
             $numRows = $arraysInUrl[4];
 
-            if ($result -> num_rows < 10) {
-                $pageRows = $result -> num_rows;
+            if (count($result) < 10) {
+                $pageRows = count($result);
             }
         }
     }
@@ -222,13 +222,13 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             
             $result = category::where([$columnInQuestion , " '" . $sortingType . "' "]) -> withProductCount('product') -> get();
 
-            echo $numRows = $result -> num_rows / 10;
+            echo $numRows = count($result) / 10;
             
         }
 
             
-        if ($result -> num_rows < 10) {
-            $pageRows = $result -> num_rows + $az;
+        if (count($result) < 10) {
+            $pageRows = count($result) + $az;
         }else {
             $pageRows = $az + 10;
         }
@@ -255,13 +255,13 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
             
             $result = category::withProductCount('product') -> formHaving($columnInQuestion) -> get();
 
-            echo $numRows = $result -> num_rows / 10;
+            echo $numRows = count($result) / 10;
             
         }
 
             
-        if ($result -> num_rows < 10) {
-            $pageRows = $result -> num_rows + $az;
+        if (count($result) < 10) {
+            $pageRows = count($result) + $az;
         }else {
             $pageRows = $az + 10;
         }
@@ -272,10 +272,10 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
 
 
 // $result = category::getReturnedOBJ();
-// if ($result -> num_rows < 10) {
-//     $pageRows = $result -> num_rows;
+// if (count($result) < 10) {
+//     $pageRows = count($result);
 // }
-// $numRows = $result -> num_rows / 10;
+// $numRows = count($result) / 10;
 
     ?>
 
@@ -337,23 +337,25 @@ for ($i=3; $i < count($GLOBALS['urlArray']); $i++) {
     </div>
     <div style="background-color: bisque;padding: 10px;margin: 10px;border-radius: 10px;display: flex;flex-direction: column;align-items: center;width: 80%;">
         <?php 
-        for ($i=$az; $i < $pageRows ; $i++) { if (!empty($basicValue)){ $value = $basicValue[$i]; } else { $value = $result -> fetch_assoc(); } ?>
+        for ($i=$az; $i < $pageRows ; $i++) { 
+        // if (!empty($basicValue)){ $value = $basicValue[$i]; } else { $value = $result -> fetch_assoc(); } ?>
+        
             <div style="background-color: azure;margin: 10px;padding: 10px;border-radius: 10px;width: 96%;display: flex;justify-content: space-around;align-items: center;">
                 <div>
-                    <?= $value['category_id'] ?>
+                    <?= $result[$i]['category_id'] ?>
                 </div>
                 <div style="width: 200px;display: flex;justify-content: center;">
-                    <?= $value['title'] ?>
+                    <?= $result[$i]['title'] ?>
                 </div>
                 <div style="width: 300px;display: flex;justify-content: center;">
-                    <?= $value['category_description'] ?>
+                    <?= $result[$i]['category_description'] ?>
                 </div>
                 <div style="width: 300px;display: flex;justify-content: center;">
-                    <?= $value['categoryProductCount'] ?>
+                    <?= $result[$i]['categoryProductCount'] ?>
                 </div>
-                <a href="http://localhost/ecommerceBuilderAndFacade/singleCategory/<?= $value['category_id'] ?>" target="_blank">نمایش</a>
-                <a href="http://localhost/ecommerceBuilderAndFacade/editeCategory/<?= $value['category_id'] ?>" target="_blank">ویرایش</a>
-                <a href="http://localhost/ecommerceBuilderAndFacade/deleteCategory/<?= $value['category_id'] ?>" target="_blank">حذف</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/singleCategory/<?= $result[$i]['category_id'] ?>" target="_blank">نمایش</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/editeCategory/<?= $result[$i]['category_id'] ?>" target="_blank">ویرایش</a>
+                <a href="http://localhost/ecommerceBuilderAndFacade/deleteCategory/<?= $result[$i]['category_id'] ?>" target="_blank">حذف</a>
             </div>
         <?php } ?>
     </div>
